@@ -9,7 +9,6 @@ const routes = [
   { path: '/verify/:pathMatch(.*)*', name: 'verify', component: Placeholder, meta: { title: '证书验证与简历分享' } },
   { path: '/platform/:pathMatch(.*)*', name: 'platform', component: Placeholder, meta: { title: '平台工作台' } },
   { path: '/student/growth', name: 'student-growth', component: () => import('@/features/growth/GrowthPage.vue'), meta: { title: '成长时间线' } },
-  { path: '/student/portrait', name: 'student-portrait', component: () => import('@/features/portrait/PortraitPage.vue'), meta: { title: '我的画像' } },
   { path: '/student/:pathMatch(.*)*', name: 'student', component: Placeholder, meta: { title: '学员工作台' } },
   { path: '/university/:pathMatch(.*)*', name: 'university', component: Placeholder, meta: { title: '高校工作台' } },
   { path: '/enterprise/:pathMatch(.*)*', name: 'enterprise', component: Placeholder, meta: { title: '企业工作台' } },
