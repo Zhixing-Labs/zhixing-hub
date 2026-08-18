@@ -81,6 +81,18 @@ enum LegalDocumentType {
   PRIVACY_POLICY
 }
 
+enum PhoneChangeInitiator {
+  SELF
+  COUNSELOR
+}
+
+enum PhoneChangeStatus {
+  PENDING_SMS
+  PENDING_CONFIRM
+  APPLIED
+  REJECTED
+}
+
 enum LegalDocumentStatus {
   DRAFT
   PUBLISHED
@@ -350,6 +362,8 @@ model Account {
   totpCredential          TotpCredential?
   totpRecoveryCodes       TotpRecoveryCode[]
   protocolConsents        ProtocolConsent[]
+  phoneChangeRequests     PhoneChangeRequest[]
+  phoneChangeResolutions  PhoneChangeRequest[]       @relation("PhoneChangeResolver")
   auditEventsAsActor      AuditEvent[]               @relation("AuditActor")
   legalDocumentsCreated   LegalDocumentVersion[]     @relation("LegalDocumentCreator")
   legalDocumentsPublished LegalDocumentVersion[]     @relation("LegalDocumentPublisher")
@@ -518,6 +532,26 @@ model ProtocolConsent {
   @@unique([accountId, documentVersionId])
   @@index([documentVersionId])
   @@map("protocol_consent")
+}
+
+// 手机号换绑流转（《07》5.6）：自助 = 旧号 + 新号短信验证后（高校认证学员）待辅导员确认；
+// 辅导员代发起 = 旧号丢失救济，新号短信验证后直接生效。
+model PhoneChangeRequest {
+  id                  String               @id @default(uuid()) @db.Uuid
+  accountId           String               @map("account_id") @db.Uuid
+  newPhone            String               @map("new_phone") @db.VarChar(11)
+  initiatedBy         PhoneChangeInitiator @default(SELF) @map("initiated_by")
+  status              PhoneChangeStatus    @default(PENDING_CONFIRM)
+  verifiedNewPhoneAt  DateTime?            @map("verified_new_phone_at") @db.Timestamptz(3)
+  createdAt           DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  resolvedAt          DateTime?            @map("resolved_at") @db.Timestamptz(3)
+  resolvedByAccountId String?              @map("resolved_by_account_id") @db.Uuid
+  account             Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  resolvedBy          Account?             @relation("PhoneChangeResolver", fields: [resolvedByAccountId], references: [id], onDelete: SetNull)
+
+  @@index([accountId, status])
+  @@index([status, createdAt])
+  @@map("phone_change_request")
 }
 
 model AuditEvent {

@@ -9,8 +9,11 @@ import { CounselorStudentSecurityService } from './application/counselor-student
 import { IdentityService } from './application/identity.service';
 import { LoginThrottleService } from './application/login-throttle.service';
 import { PlatformAccountAdminService } from './application/platform-account-admin.service';
+import { PhoneChangeService } from './application/phone-change.service';
 import { PlatformAccountEnrollmentService } from './application/platform-account-enrollment.service';
+import { PlatformStudentRegistrationService } from './application/platform-student-registration.service';
 import { ProtocolConsentService } from './application/protocol-consent.service';
+import { StudentProfileService } from './application/student-profile.service';
 import { SmsLoginService } from './application/sms-login.service';
 import { UserAccountActivationService } from './application/user-account-activation.service';
 import { PasswordHasher } from './domain/password-hasher';
@@ -31,10 +34,13 @@ import { TotpService } from './domain/totp.service';
     IdentityService,
     LoginThrottleService,
     PasswordHasher,
+    PhoneChangeService,
     PlatformAccountAdminService,
     PlatformAccountEnrollmentService,
+    PlatformStudentRegistrationService,
     ProtocolConsentService,
     SmsLoginService,
+    StudentProfileService,
     TotpCipher,
     TotpService,
     UserAccountActivationService,
@@ -46,10 +52,13 @@ import { TotpService } from './domain/totp.service';
     IdentityService,
     LoginThrottleService,
     PasswordHasher,
+    PhoneChangeService,
     PlatformAccountAdminService,
     PlatformAccountEnrollmentService,
+    PlatformStudentRegistrationService,
     ProtocolConsentService,
     SmsLoginService,
+    StudentProfileService,
     TotpCipher,
     TotpService,
     UserAccountActivationService,

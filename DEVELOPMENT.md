@@ -16,6 +16,7 @@ cp .env.example .env         # Windows PowerShell 可用：Copy-Item .env.exampl
 pnpm prisma:migrate:deploy   # 应用已提交迁移
 pnpm prisma:generate         # 生成 Prisma Client（schema 变更后重跑）
 pnpm bootstrap:super-admin   # 仅首次部署；先在 .env 填写超管与 TOTP 引导变量
+pnpm bootstrap:public-academy # 预置知行公开学院：行政区划首批种子 + 按地级市建校区学院（幂等，可重复执行）
 ```
 
 ## 日常命令

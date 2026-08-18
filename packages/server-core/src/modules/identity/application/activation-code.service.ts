@@ -67,6 +67,27 @@ export class ActivationCodeService {
     return this.issueCode(phone, captchaToken, 'LOGIN');
   }
 
+  async issueRegistrationCode(
+    phone: string,
+    captchaToken: string,
+  ): Promise<SmsDelivery> {
+    return this.issueCode(phone, captchaToken, 'REGISTRATION');
+  }
+
+  async issuePhoneChangeOldCode(
+    phone: string,
+    captchaToken: string,
+  ): Promise<SmsDelivery> {
+    return this.issueCode(phone, captchaToken, 'PHONE_CHANGE_OLD');
+  }
+
+  async issuePhoneChangeNewCode(
+    phone: string,
+    captchaToken: string,
+  ): Promise<SmsDelivery> {
+    return this.issueCode(phone, captchaToken, 'PHONE_CHANGE_NEW');
+  }
+
   async issueCode(
     phone: string,
     captchaToken: string,
@@ -116,6 +137,27 @@ export class ActivationCodeService {
 
   async consumeLoginCode(phone: string, code: string): Promise<boolean> {
     return this.consumeCode(phone, code, 'LOGIN');
+  }
+
+  async consumeRegistrationCode(
+    phone: string,
+    code: string,
+  ): Promise<boolean> {
+    return this.consumeCode(phone, code, 'REGISTRATION');
+  }
+
+  async consumePhoneChangeOldCode(
+    phone: string,
+    code: string,
+  ): Promise<boolean> {
+    return this.consumeCode(phone, code, 'PHONE_CHANGE_OLD');
+  }
+
+  async consumePhoneChangeNewCode(
+    phone: string,
+    code: string,
+  ): Promise<boolean> {
+    return this.consumeCode(phone, code, 'PHONE_CHANGE_NEW');
   }
 
   async consumeCode(

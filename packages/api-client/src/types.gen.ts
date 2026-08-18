@@ -58,6 +58,42 @@ export type DisableTotpDto = {
     secondFactorCode: string;
 };
 
+export type PendingPhoneChangeDto = {
+    requestId: string;
+    studentAccountId: string;
+    studentNumber: string;
+    displayName: string;
+    currentPhone: string | null;
+    newPhone: string;
+    createdAt: string;
+    /**
+     * 展示用逾期天数（不自动通过、无时限，《07》5.6）
+     */
+    pendingDays: number;
+};
+
+export type CounselorInitiatePhoneChangeDto = {
+    newPhone: string;
+    captchaToken: string;
+};
+
+export type ActivationCodeDeliveryDto = {
+    messageId: string;
+    mock: boolean;
+    /**
+     * 仅 Mock 环境返回，正式短信适配器不包含此字段
+     */
+    debugCode?: string;
+};
+
+export type CounselorVerifyPhoneChangeDto = {
+    code: string;
+};
+
+export type CounselorResolvePhoneChangeDto = {
+    approve: boolean;
+};
+
 export type CurrentLegalDocumentDto = {
     id: string;
     type: 'USER_AGREEMENT' | 'PRIVACY_POLICY';
@@ -75,15 +111,6 @@ export type CaptchaChallengeDto = {
 export type RequestUserActivationCodeDto = {
     phone: string;
     captchaToken: string;
-};
-
-export type ActivationCodeDeliveryDto = {
-    messageId: string;
-    mock: boolean;
-    /**
-     * 仅 Mock 环境返回，正式短信适配器不包含此字段
-     */
-    debugCode?: string;
 };
 
 export type ConfirmUserActivationDto = {
@@ -205,6 +232,28 @@ export type FinishPlatformEnrollmentDto = {
     consentDocumentVersionIds: Array<string>;
 };
 
+export type RequestPhoneChangeOldCodeDto = {
+    captchaToken: string;
+};
+
+export type RequestPhoneChangeNewCodeDto = {
+    oldPhoneCode: string;
+    newPhone: string;
+    captchaToken: string;
+};
+
+export type ConfirmPhoneChangeDto = {
+    newPhoneCode: string;
+};
+
+export type PhoneChangeConfirmResultDto = {
+    applied: boolean;
+    /**
+     * 高校认证学员换绑须辅导员确认后生效（《07》5.6）
+     */
+    requiresCounselorConfirmation: boolean;
+};
+
 export type CreatePlatformAccountDto = {
     username: string;
     displayName: string;
@@ -221,6 +270,86 @@ export type CreatedPlatformAccountDto = {
      * 仅本次响应展示，由超管安全交付给账号本人
      */
     readonly initialPassword: string;
+};
+
+export type RequestRegistrationCodeDto = {
+    phone: string;
+    captchaToken: string;
+};
+
+export type ConfirmRegistrationDto = {
+    phone: string;
+    code: string;
+    consentDocumentVersionIds: Array<string>;
+    displayName: string;
+    /**
+     * 平台学员注册可选：男 / 女 / 未说明
+     */
+    gender: 'MALE' | 'FEMALE' | 'UNSPECIFIED';
+    /**
+     * 出生日期，YYYY-MM-DD
+     */
+    birthDate: string;
+    /**
+     * 注册城市（地级市行政区划代码，决定归属的公开学院校区学院）
+     */
+    registrationCityCode: string;
+};
+
+export type StudentProfileStudentDto = {
+    kind: 'UNIVERSITY_CERTIFIED' | 'PLATFORM';
+    lifecycleState: 'ENROLLED' | 'GRADUATE_ACTIVE' | 'READ_ONLY' | 'SUSPENDED';
+    registrationCityCode: string | null;
+    residentCityCode: string | null;
+    /**
+     * 注册信息冻结截止（平台学员自注册起 90 天）
+     */
+    profileFrozenUntil: string | null;
+    /**
+     * 最近一次自助修改（滚动 365 天至多 1 次的基准）
+     */
+    lastSelfEditedAt: string | null;
+};
+
+export type MyProfileDto = {
+    accountId: string;
+    displayName: string;
+    gender: 'MALE' | 'FEMALE' | 'UNSPECIFIED';
+    birthDate: string | null;
+    politicalAffiliation: string | null;
+    /**
+     * 首登资料补齐完成时间；为空表示业务门禁尚未放行
+     */
+    profileCompletedAt: string | null;
+    student: StudentProfileStudentDto | null;
+};
+
+export type CompleteFirstLoginProfileDto = {
+    /**
+     * 出生年月日（必填），YYYY-MM-DD
+     */
+    birthDate: string;
+    /**
+     * 政治面貌（选填；平台无功能消费该字段，不作筛选条件）
+     */
+    politicalAffiliation?: string;
+};
+
+export type UpdateResidentCityDto = {
+    residentCityCode: string;
+};
+
+export type SelfCorrectProfileDto = {
+    displayName?: string;
+    gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED';
+    /**
+     * YYYY-MM-DD
+     */
+    birthDate?: string;
+    /**
+     * 注册城市变更（同步常驻城市初值）
+     */
+    registrationCityCode?: string;
 };
 
 export type AdministrativeDivisionDto = {
@@ -731,6 +860,73 @@ export type AccountSecurityControllerDisableTotpResponses = {
 
 export type AccountSecurityControllerDisableTotpResponse = AccountSecurityControllerDisableTotpResponses[keyof AccountSecurityControllerDisableTotpResponses];
 
+export type CounselorPhoneChangeControllerListPendingData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/university/students/phone-change-requests';
+};
+
+export type CounselorPhoneChangeControllerListPendingResponses = {
+    200: Array<PendingPhoneChangeDto>;
+};
+
+export type CounselorPhoneChangeControllerListPendingResponse = CounselorPhoneChangeControllerListPendingResponses[keyof CounselorPhoneChangeControllerListPendingResponses];
+
+export type CounselorPhoneChangeControllerInitiateData = {
+    body: CounselorInitiatePhoneChangeDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        accountId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/students/{accountId}/phone-change/initiate';
+};
+
+export type CounselorPhoneChangeControllerInitiateResponses = {
+    200: ActivationCodeDeliveryDto;
+};
+
+export type CounselorPhoneChangeControllerInitiateResponse = CounselorPhoneChangeControllerInitiateResponses[keyof CounselorPhoneChangeControllerInitiateResponses];
+
+export type CounselorPhoneChangeControllerVerifyData = {
+    body: CounselorVerifyPhoneChangeDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        requestId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/phone-change-requests/{requestId}/verify';
+};
+
+export type CounselorPhoneChangeControllerVerifyResponses = {
+    204: void;
+};
+
+export type CounselorPhoneChangeControllerVerifyResponse = CounselorPhoneChangeControllerVerifyResponses[keyof CounselorPhoneChangeControllerVerifyResponses];
+
+export type CounselorPhoneChangeControllerResolveData = {
+    body: CounselorResolvePhoneChangeDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        requestId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/phone-change-requests/{requestId}/resolve';
+};
+
+export type CounselorPhoneChangeControllerResolveResponses = {
+    204: void;
+};
+
+export type CounselorPhoneChangeControllerResolveResponse = CounselorPhoneChangeControllerResolveResponses[keyof CounselorPhoneChangeControllerResolveResponses];
+
 export type IdentityControllerCurrentLegalDocumentsData = {
     body?: never;
     path?: never;
@@ -903,6 +1099,54 @@ export type IdentityControllerCurrentSessionResponses = {
 
 export type IdentityControllerCurrentSessionResponse = IdentityControllerCurrentSessionResponses[keyof IdentityControllerCurrentSessionResponses];
 
+export type PhoneChangeControllerRequestOldCodeData = {
+    body: RequestPhoneChangeOldCodeDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/phone-change/old-phone/code';
+};
+
+export type PhoneChangeControllerRequestOldCodeResponses = {
+    200: ActivationCodeDeliveryDto;
+};
+
+export type PhoneChangeControllerRequestOldCodeResponse = PhoneChangeControllerRequestOldCodeResponses[keyof PhoneChangeControllerRequestOldCodeResponses];
+
+export type PhoneChangeControllerRequestNewCodeData = {
+    body: RequestPhoneChangeNewCodeDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/phone-change/new-phone/code';
+};
+
+export type PhoneChangeControllerRequestNewCodeResponses = {
+    200: ActivationCodeDeliveryDto;
+};
+
+export type PhoneChangeControllerRequestNewCodeResponse = PhoneChangeControllerRequestNewCodeResponses[keyof PhoneChangeControllerRequestNewCodeResponses];
+
+export type PhoneChangeControllerConfirmData = {
+    body: ConfirmPhoneChangeDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/phone-change/confirm';
+};
+
+export type PhoneChangeControllerConfirmResponses = {
+    200: PhoneChangeConfirmResultDto;
+};
+
+export type PhoneChangeControllerConfirmResponse = PhoneChangeControllerConfirmResponses[keyof PhoneChangeControllerConfirmResponses];
+
 export type PlatformAccountControllerCreateData = {
     body: CreatePlatformAccountDto;
     headers: {
@@ -954,6 +1198,93 @@ export type PlatformAccountControllerResetTotpResponses = {
 };
 
 export type PlatformAccountControllerResetTotpResponse = PlatformAccountControllerResetTotpResponses[keyof PlatformAccountControllerResetTotpResponses];
+
+export type PlatformRegistrationControllerRequestCodeData = {
+    body: RequestRegistrationCodeDto;
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/platform-registration/codes';
+};
+
+export type PlatformRegistrationControllerRequestCodeResponses = {
+    200: ActivationCodeDeliveryDto;
+};
+
+export type PlatformRegistrationControllerRequestCodeResponse = PlatformRegistrationControllerRequestCodeResponses[keyof PlatformRegistrationControllerRequestCodeResponses];
+
+export type PlatformRegistrationControllerConfirmData = {
+    body: ConfirmRegistrationDto;
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/platform-registration/confirm';
+};
+
+export type PlatformRegistrationControllerConfirmResponses = {
+    201: CreatedSessionDto;
+};
+
+export type PlatformRegistrationControllerConfirmResponse = PlatformRegistrationControllerConfirmResponses[keyof PlatformRegistrationControllerConfirmResponses];
+
+export type StudentProfileControllerGetMyProfileData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/me/profile';
+};
+
+export type StudentProfileControllerGetMyProfileResponses = {
+    200: MyProfileDto;
+};
+
+export type StudentProfileControllerGetMyProfileResponse = StudentProfileControllerGetMyProfileResponses[keyof StudentProfileControllerGetMyProfileResponses];
+
+export type StudentProfileControllerCompleteFirstLoginData = {
+    body: CompleteFirstLoginProfileDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/me/profile/completion';
+};
+
+export type StudentProfileControllerCompleteFirstLoginResponses = {
+    200: MyProfileDto;
+};
+
+export type StudentProfileControllerCompleteFirstLoginResponse = StudentProfileControllerCompleteFirstLoginResponses[keyof StudentProfileControllerCompleteFirstLoginResponses];
+
+export type StudentProfileControllerUpdateResidentCityData = {
+    body: UpdateResidentCityDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/me/resident-city';
+};
+
+export type StudentProfileControllerUpdateResidentCityResponses = {
+    204: void;
+};
+
+export type StudentProfileControllerUpdateResidentCityResponse = StudentProfileControllerUpdateResidentCityResponses[keyof StudentProfileControllerUpdateResidentCityResponses];
+
+export type StudentProfileControllerSelfCorrectProfileData = {
+    body: SelfCorrectProfileDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/me/platform-profile';
+};
+
+export type StudentProfileControllerSelfCorrectProfileResponses = {
+    200: MyProfileDto;
+};
+
+export type StudentProfileControllerSelfCorrectProfileResponse = StudentProfileControllerSelfCorrectProfileResponses[keyof StudentProfileControllerSelfCorrectProfileResponses];
 
 export type StudentSecurityControllerDisableStudentTotpData = {
     body?: never;

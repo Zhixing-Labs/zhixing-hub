@@ -358,6 +358,180 @@
         ]
       }
     },
+    "/api/v1/university/students/phone-change-requests": {
+      "get": {
+        "operationId": "CounselorPhoneChangeController_listPending",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PendingPhoneChangeDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Counselor phone change"
+        ]
+      }
+    },
+    "/api/v1/university/students/{accountId}/phone-change/initiate": {
+      "post": {
+        "operationId": "CounselorPhoneChangeController_initiate",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CounselorInitiatePhoneChangeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationCodeDeliveryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Counselor phone change"
+        ]
+      }
+    },
+    "/api/v1/university/phone-change-requests/{requestId}/verify": {
+      "post": {
+        "operationId": "CounselorPhoneChangeController_verify",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CounselorVerifyPhoneChangeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Counselor phone change"
+        ]
+      }
+    },
+    "/api/v1/university/phone-change-requests/{requestId}/resolve": {
+      "post": {
+        "operationId": "CounselorPhoneChangeController_resolve",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CounselorResolvePhoneChangeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Counselor phone change"
+        ]
+      }
+    },
     "/api/v1/auth/legal-documents/current": {
       "get": {
         "operationId": "IdentityController_currentLegalDocuments",
@@ -734,6 +908,141 @@
         ]
       }
     },
+    "/api/v1/account/phone-change/old-phone/code": {
+      "post": {
+        "operationId": "PhoneChangeController_requestOldCode",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPhoneChangeOldCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationCodeDeliveryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Phone change"
+        ]
+      }
+    },
+    "/api/v1/account/phone-change/new-phone/code": {
+      "post": {
+        "operationId": "PhoneChangeController_requestNewCode",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPhoneChangeNewCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationCodeDeliveryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Phone change"
+        ]
+      }
+    },
+    "/api/v1/account/phone-change/confirm": {
+      "post": {
+        "operationId": "PhoneChangeController_confirm",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmPhoneChangeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneChangeConfirmResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Phone change"
+        ]
+      }
+    },
     "/api/v1/platform/accounts": {
       "post": {
         "operationId": "PlatformAccountController_create",
@@ -848,6 +1157,222 @@
         ],
         "tags": [
           "Platform accounts"
+        ]
+      }
+    },
+    "/api/v1/account/platform-registration/codes": {
+      "post": {
+        "operationId": "PlatformRegistrationController_requestCode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestRegistrationCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationCodeDeliveryDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Platform student registration"
+        ]
+      }
+    },
+    "/api/v1/account/platform-registration/confirm": {
+      "post": {
+        "operationId": "PlatformRegistrationController_confirm",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmRegistrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Platform student registration"
+        ]
+      }
+    },
+    "/api/v1/account/me/profile": {
+      "get": {
+        "operationId": "StudentProfileController_getMyProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Student profile"
+        ]
+      }
+    },
+    "/api/v1/account/me/profile/completion": {
+      "post": {
+        "operationId": "StudentProfileController_completeFirstLogin",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteFirstLoginProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Student profile"
+        ]
+      }
+    },
+    "/api/v1/account/me/resident-city": {
+      "patch": {
+        "operationId": "StudentProfileController_updateResidentCity",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateResidentCityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Student profile"
+        ]
+      }
+    },
+    "/api/v1/account/me/platform-profile": {
+      "patch": {
+        "operationId": "StudentProfileController_selfCorrectProfile",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SelfCorrectProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Student profile"
         ]
       }
     },
@@ -2048,6 +2573,108 @@
           "secondFactorCode"
         ]
       },
+      "PendingPhoneChangeDto": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentNumber": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "currentPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "newPhone": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pendingDays": {
+            "type": "number",
+            "description": "展示用逾期天数（不自动通过、无时限，《07》5.6）"
+          }
+        },
+        "required": [
+          "requestId",
+          "studentAccountId",
+          "studentNumber",
+          "displayName",
+          "currentPhone",
+          "newPhone",
+          "createdAt",
+          "pendingDays"
+        ]
+      },
+      "CounselorInitiatePhoneChangeDto": {
+        "type": "object",
+        "properties": {
+          "newPhone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "captchaToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "newPhone",
+          "captchaToken"
+        ]
+      },
+      "ActivationCodeDeliveryDto": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string"
+          },
+          "mock": {
+            "type": "boolean"
+          },
+          "debugCode": {
+            "type": "string",
+            "description": "仅 Mock 环境返回，正式短信适配器不包含此字段"
+          }
+        },
+        "required": [
+          "messageId",
+          "mock"
+        ]
+      },
+      "CounselorVerifyPhoneChangeDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "CounselorResolvePhoneChangeDto": {
+        "type": "object",
+        "properties": {
+          "approve": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "approve"
+        ]
+      },
       "CurrentLegalDocumentDto": {
         "type": "object",
         "properties": {
@@ -2114,25 +2741,6 @@
         "required": [
           "phone",
           "captchaToken"
-        ]
-      },
-      "ActivationCodeDeliveryDto": {
-        "type": "object",
-        "properties": {
-          "messageId": {
-            "type": "string"
-          },
-          "mock": {
-            "type": "boolean"
-          },
-          "debugCode": {
-            "type": "string",
-            "description": "仅 Mock 环境返回，正式短信适配器不包含此字段"
-          }
-        },
-        "required": [
-          "messageId",
-          "mock"
         ]
       },
       "ConfirmUserActivationDto": {
@@ -2493,6 +3101,66 @@
           "consentDocumentVersionIds"
         ]
       },
+      "RequestPhoneChangeOldCodeDto": {
+        "type": "object",
+        "properties": {
+          "captchaToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "captchaToken"
+        ]
+      },
+      "RequestPhoneChangeNewCodeDto": {
+        "type": "object",
+        "properties": {
+          "oldPhoneCode": {
+            "type": "string",
+            "example": "123456"
+          },
+          "newPhone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "captchaToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "oldPhoneCode",
+          "newPhone",
+          "captchaToken"
+        ]
+      },
+      "ConfirmPhoneChangeDto": {
+        "type": "object",
+        "properties": {
+          "newPhoneCode": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "newPhoneCode"
+        ]
+      },
+      "PhoneChangeConfirmResultDto": {
+        "type": "object",
+        "properties": {
+          "applied": {
+            "type": "boolean"
+          },
+          "requiresCounselorConfirmation": {
+            "type": "boolean",
+            "description": "高校认证学员换绑须辅导员确认后生效（《07》5.6）"
+          }
+        },
+        "required": [
+          "applied",
+          "requiresCounselorConfirmation"
+        ]
+      },
       "CreatePlatformAccountDto": {
         "type": "object",
         "properties": {
@@ -2561,6 +3229,226 @@
           "status",
           "initialPassword"
         ]
+      },
+      "RequestRegistrationCodeDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "captchaToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone",
+          "captchaToken"
+        ]
+      },
+      "ConfirmRegistrationDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "code": {
+            "type": "string",
+            "example": "123456"
+          },
+          "consentDocumentVersionIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "description": "平台学员注册可选：男 / 女 / 未说明",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "UNSPECIFIED"
+            ]
+          },
+          "birthDate": {
+            "type": "string",
+            "description": "出生日期，YYYY-MM-DD",
+            "example": "2004-05-01"
+          },
+          "registrationCityCode": {
+            "type": "string",
+            "description": "注册城市（地级市行政区划代码，决定归属的公开学院校区学院）",
+            "example": "640100"
+          }
+        },
+        "required": [
+          "phone",
+          "code",
+          "consentDocumentVersionIds",
+          "displayName",
+          "gender",
+          "birthDate",
+          "registrationCityCode"
+        ]
+      },
+      "StudentProfileStudentDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "UNIVERSITY_CERTIFIED",
+              "PLATFORM"
+            ]
+          },
+          "lifecycleState": {
+            "type": "string",
+            "enum": [
+              "ENROLLED",
+              "GRADUATE_ACTIVE",
+              "READ_ONLY",
+              "SUSPENDED"
+            ]
+          },
+          "registrationCityCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "residentCityCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "profileFrozenUntil": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "注册信息冻结截止（平台学员自注册起 90 天）"
+          },
+          "lastSelfEditedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "最近一次自助修改（滚动 365 天至多 1 次的基准）"
+          }
+        },
+        "required": [
+          "kind",
+          "lifecycleState",
+          "registrationCityCode",
+          "residentCityCode",
+          "profileFrozenUntil",
+          "lastSelfEditedAt"
+        ]
+      },
+      "MyProfileDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "UNSPECIFIED"
+            ]
+          },
+          "birthDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "politicalAffiliation": {
+            "type": "string",
+            "nullable": true
+          },
+          "profileCompletedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "首登资料补齐完成时间；为空表示业务门禁尚未放行"
+          },
+          "student": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StudentProfileStudentDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "displayName",
+          "gender",
+          "birthDate",
+          "politicalAffiliation",
+          "profileCompletedAt",
+          "student"
+        ]
+      },
+      "CompleteFirstLoginProfileDto": {
+        "type": "object",
+        "properties": {
+          "birthDate": {
+            "type": "string",
+            "description": "出生年月日（必填），YYYY-MM-DD"
+          },
+          "politicalAffiliation": {
+            "type": "string",
+            "description": "政治面貌（选填；平台无功能消费该字段，不作筛选条件）"
+          }
+        },
+        "required": [
+          "birthDate"
+        ]
+      },
+      "UpdateResidentCityDto": {
+        "type": "object",
+        "properties": {
+          "residentCityCode": {
+            "type": "string",
+            "example": "640100"
+          }
+        },
+        "required": [
+          "residentCityCode"
+        ]
+      },
+      "SelfCorrectProfileDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "UNSPECIFIED"
+            ]
+          },
+          "birthDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "registrationCityCode": {
+            "type": "string",
+            "description": "注册城市变更（同步常驻城市初值）"
+          }
+        }
       },
       "AdministrativeDivisionDto": {
         "type": "object",

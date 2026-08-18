@@ -17,7 +17,12 @@ export interface SmsDelivery {
   debugCode?: string;
 }
 
-export type SmsCodePurpose = 'ACTIVATION' | 'LOGIN';
+export type SmsCodePurpose =
+  | 'ACTIVATION'
+  | 'LOGIN'
+  | 'REGISTRATION'
+  | 'PHONE_CHANGE_OLD'
+  | 'PHONE_CHANGE_NEW';
 
 export interface SmsAdapter {
   sendCode(
