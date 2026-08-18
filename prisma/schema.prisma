@@ -1,0 +1,528 @@
+// 知行工坊数据模型 —— 唯一结构化事实源（《11》第 6 节）。
+// 表随业务模块按《11》第 19.1 节实施顺序逐阶段落库；迁移保持向后兼容。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantType {
+  PLATFORM
+  UNIVERSITY
+  ENTERPRISE
+  GOVERNMENT
+}
+
+enum RecordStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum AccountKind {
+  PLATFORM_ADMIN
+  END_USER
+}
+
+enum AccountStatus {
+  PENDING_ACTIVATION
+  ACTIVE
+  SUSPENDED
+}
+
+enum MembershipRole {
+  SUPER_ADMIN
+  ORGANIZATION_ADMIN
+  OPERATIONS_SPECIALIST
+  PLATFORM_DASHBOARD
+  UNIVERSITY_ADMIN
+  COLLEGE_ADMIN
+  PROGRAM_LEAD
+  COUNSELOR
+  STUDENT
+  UNIVERSITY_DASHBOARD
+  ENTERPRISE_ADMIN
+  HR
+  PROJECT_LEAD
+  MENTOR
+  ENTERPRISE_DASHBOARD
+  GOVERNMENT_DASHBOARD_ADMIN
+  GOVERNMENT_DASHBOARD
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  UNSPECIFIED
+}
+
+enum StudentKind {
+  UNIVERSITY_CERTIFIED
+  PLATFORM
+}
+
+enum StudentLifecycleState {
+  ENROLLED
+  GRADUATE_ACTIVE
+  READ_ONLY
+  SUSPENDED
+}
+
+enum AdministrativeDivisionLevel {
+  PROVINCE
+  PREFECTURE
+}
+
+enum LegalDocumentType {
+  USER_AGREEMENT
+  PRIVACY_POLICY
+}
+
+enum LegalDocumentStatus {
+  DRAFT
+  PUBLISHED
+  RETIRED
+}
+
+model AdministrativeDivision {
+  code                        String                      @id @db.VarChar(12)
+  name                        String                      @db.VarChar(100)
+  level                       AdministrativeDivisionLevel
+  parentCode                  String?                     @map("parent_code") @db.VarChar(12)
+  active                      Boolean                     @default(true)
+  createdAt                   DateTime                    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                   DateTime                    @updatedAt @map("updated_at") @db.Timestamptz(3)
+  parent                      AdministrativeDivision?     @relation("AdministrativeDivisionTree", fields: [parentCode], references: [code], onDelete: Restrict)
+  children                    AdministrativeDivision[]    @relation("AdministrativeDivisionTree")
+  campuses                    Campus[]
+  enterpriseLocations         EnterpriseLocation[]
+  governmentOffices           GovernmentOffice[]
+  residentStudentProfiles     StudentProfile[]            @relation("StudentResidentCity")
+  registrationStudentProfiles StudentProfile[]            @relation("StudentRegistrationCity")
+
+  @@index([parentCode])
+  @@map("administrative_division")
+}
+
+model EnterpriseNatureTag {
+  code        String       @id @db.VarChar(50)
+  name        String       @unique @db.VarChar(100)
+  sortOrder   Int          @default(0) @map("sort_order")
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  enterprises Enterprise[]
+
+  @@map("enterprise_nature_tag")
+}
+
+model IndustryCategory {
+  code        String       @id @db.VarChar(50)
+  name        String       @unique @db.VarChar(100)
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  enterprises Enterprise[]
+
+  @@map("industry_category")
+}
+
+model Tenant {
+  id               String            @id @default(uuid()) @db.Uuid
+  type             TenantType
+  name             String            @db.VarChar(200)
+  status           RecordStatus      @default(ACTIVE)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  university       University?
+  enterprise       Enterprise?
+  governmentOffice GovernmentOffice?
+  departments      Department[]
+  campuses         Campus[]
+  colleges         College[]
+  majors           Major[]
+  classes          CohortClass[]
+  memberships      Membership[]
+  studentProfiles  StudentProfile[]
+  auditEvents      AuditEvent[]
+
+  @@unique([type, name])
+  @@index([type, status])
+  @@map("tenant")
+}
+
+model University {
+  tenantId             String                      @id @map("tenant_id") @db.Uuid
+  isPublicAcademy      Boolean                     @default(false) @map("is_public_academy")
+  createdAt            DateTime                    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime                    @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant               Tenant                      @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  visibleToGovernments GovernmentUniversityScope[]
+
+  @@map("university")
+}
+
+model Enterprise {
+  tenantId             String               @id @map("tenant_id") @db.Uuid
+  natureTagCode        String               @map("nature_tag_code") @db.VarChar(50)
+  industryCategoryCode String               @map("industry_category_code") @db.VarChar(50)
+  createdAt            DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant               Tenant               @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  natureTag            EnterpriseNatureTag  @relation(fields: [natureTagCode], references: [code], onDelete: Restrict)
+  industryCategory     IndustryCategory     @relation(fields: [industryCategoryCode], references: [code], onDelete: Restrict)
+  locations            EnterpriseLocation[]
+
+  @@index([natureTagCode])
+  @@index([industryCategoryCode])
+  @@map("enterprise")
+}
+
+model GovernmentOffice {
+  tenantId         String                      @id @map("tenant_id") @db.Uuid
+  divisionCode     String                      @map("division_code") @db.VarChar(12)
+  createdAt        DateTime                    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime                    @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant           Tenant                      @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  division         AdministrativeDivision      @relation(fields: [divisionCode], references: [code], onDelete: Restrict)
+  universityScopes GovernmentUniversityScope[]
+
+  @@index([divisionCode])
+  @@map("government_office")
+}
+
+model GovernmentUniversityScope {
+  governmentTenantId String           @map("government_tenant_id") @db.Uuid
+  universityTenantId String           @map("university_tenant_id") @db.Uuid
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  government         GovernmentOffice @relation(fields: [governmentTenantId], references: [tenantId], onDelete: Cascade)
+  university         University       @relation(fields: [universityTenantId], references: [tenantId], onDelete: Cascade)
+
+  @@id([governmentTenantId, universityTenantId])
+  @@index([universityTenantId])
+  @@map("government_university_scope")
+}
+
+model Department {
+  id          String       @id @default(uuid()) @db.Uuid
+  tenantId    String       @map("tenant_id") @db.Uuid
+  name        String       @db.VarChar(100)
+  status      RecordStatus @default(ACTIVE)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  memberships Membership[]
+
+  @@unique([tenantId, name])
+  @@unique([id, tenantId])
+  @@map("department")
+}
+
+model Campus {
+  id              String                 @id @default(uuid()) @db.Uuid
+  tenantId        String                 @map("tenant_id") @db.Uuid
+  name            String                 @db.VarChar(100)
+  divisionCode    String                 @map("division_code") @db.VarChar(12)
+  isSystemManaged Boolean                @default(false) @map("is_system_managed")
+  status          RecordStatus           @default(ACTIVE)
+  createdAt       DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant          Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  division        AdministrativeDivision @relation(fields: [divisionCode], references: [code], onDelete: Restrict)
+  collegeCampuses CollegeCampus[]
+
+  @@unique([tenantId, name])
+  @@unique([id, tenantId])
+  @@index([divisionCode])
+  @@map("campus")
+}
+
+model College {
+  id          String          @id @default(uuid()) @db.Uuid
+  tenantId    String          @map("tenant_id") @db.Uuid
+  name        String          @db.VarChar(100)
+  status      RecordStatus    @default(ACTIVE)
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant      Tenant          @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  campusLinks CollegeCampus[]
+  majors      Major[]
+  memberships Membership[]
+
+  @@unique([tenantId, name])
+  @@unique([id, tenantId])
+  @@map("college")
+}
+
+model CollegeCampus {
+  tenantId  String   @map("tenant_id") @db.Uuid
+  collegeId String   @map("college_id") @db.Uuid
+  campusId  String   @map("campus_id") @db.Uuid
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  college   College  @relation(fields: [collegeId, tenantId], references: [id, tenantId], onDelete: Cascade)
+  campus    Campus   @relation(fields: [campusId, tenantId], references: [id, tenantId], onDelete: Cascade)
+
+  @@id([collegeId, campusId])
+  @@unique([tenantId, collegeId, sortOrder])
+  @@index([tenantId, campusId])
+  @@map("college_campus")
+}
+
+model Major {
+  id          String        @id @default(uuid()) @db.Uuid
+  tenantId    String        @map("tenant_id") @db.Uuid
+  collegeId   String        @map("college_id") @db.Uuid
+  name        String        @db.VarChar(100)
+  status      RecordStatus  @default(ACTIVE)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant      Tenant        @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  college     College       @relation(fields: [collegeId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  classes     CohortClass[]
+  memberships Membership[]
+
+  @@unique([collegeId, name])
+  @@unique([id, tenantId])
+  @@index([tenantId])
+  @@map("major")
+}
+
+model CohortClass {
+  id                    String           @id @default(uuid()) @db.Uuid
+  tenantId              String           @map("tenant_id") @db.Uuid
+  majorId               String           @map("major_id") @db.Uuid
+  counselorMembershipId String?          @map("counselor_membership_id") @db.Uuid
+  name                  String           @db.VarChar(100)
+  gradeLabel            String           @map("grade_label") @db.VarChar(20)
+  status                RecordStatus     @default(ACTIVE)
+  createdAt             DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant                Tenant           @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  major                 Major            @relation(fields: [majorId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  counselor             Membership?      @relation("ClassCounselor", fields: [counselorMembershipId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  studentProfiles       StudentProfile[]
+
+  @@unique([majorId, name])
+  @@unique([id, tenantId])
+  @@index([tenantId, counselorMembershipId])
+  @@map("class")
+}
+
+model EnterpriseLocation {
+  id           String                 @id @default(uuid()) @db.Uuid
+  tenantId     String                 @map("tenant_id") @db.Uuid
+  divisionCode String                 @map("division_code") @db.VarChar(12)
+  createdAt    DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  enterprise   Enterprise             @relation(fields: [tenantId], references: [tenantId], onDelete: Cascade)
+  division     AdministrativeDivision @relation(fields: [divisionCode], references: [code], onDelete: Restrict)
+
+  @@unique([tenantId, divisionCode])
+  @@index([divisionCode])
+  @@map("enterprise_location")
+}
+
+model Account {
+  id                      String                     @id @default(uuid()) @db.Uuid
+  kind                    AccountKind
+  phone                   String?                    @unique @db.VarChar(11)
+  username                String?                    @unique @db.VarChar(64)
+  passwordHash            String?                    @map("password_hash") @db.VarChar(255)
+  status                  AccountStatus              @default(PENDING_ACTIVATION)
+  displayName             String                     @map("display_name") @db.VarChar(100)
+  gender                  Gender?
+  birthDate               DateTime?                  @map("birth_date") @db.Date
+  politicalAffiliation    String?                    @map("political_affiliation") @db.VarChar(50)
+  profileCompletedAt      DateTime?                  @map("profile_completed_at") @db.Timestamptz(3)
+  lastLoginAt             DateTime?                  @map("last_login_at") @db.Timestamptz(3)
+  failedLoginCount        Int                        @default(0) @map("failed_login_count")
+  lockedUntil             DateTime?                  @map("locked_until") @db.Timestamptz(3)
+  createdAt               DateTime                   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt               DateTime                   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  membership              Membership?
+  studentProfile          StudentProfile?
+  authSessions            AuthSession[]
+  platformEnrollment      PlatformAccountEnrollment?
+  totpCredential          TotpCredential?
+  totpRecoveryCodes       TotpRecoveryCode[]
+  protocolConsents        ProtocolConsent[]
+  auditEventsAsActor      AuditEvent[]               @relation("AuditActor")
+  legalDocumentsCreated   LegalDocumentVersion[]     @relation("LegalDocumentCreator")
+  legalDocumentsPublished LegalDocumentVersion[]     @relation("LegalDocumentPublisher")
+
+  @@index([status])
+  @@index([lockedUntil])
+  @@map("account")
+}
+
+model Membership {
+  id               String         @id @default(uuid()) @db.Uuid
+  accountId        String         @unique @map("account_id") @db.Uuid
+  tenantId         String         @map("tenant_id") @db.Uuid
+  role             MembershipRole
+  status           RecordStatus   @default(ACTIVE)
+  departmentId     String?        @map("department_id") @db.Uuid
+  collegeId        String?        @map("college_id") @db.Uuid
+  majorId          String?        @map("major_id") @db.Uuid
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  account          Account        @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  tenant           Tenant         @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  department       Department?    @relation(fields: [departmentId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  college          College?       @relation(fields: [collegeId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  major            Major?         @relation(fields: [majorId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  counseledClasses CohortClass[]  @relation("ClassCounselor")
+
+  @@unique([id, tenantId])
+  @@index([tenantId, role, status])
+  @@map("membership")
+}
+
+model StudentProfile {
+  id                   String                  @id @default(uuid()) @db.Uuid
+  accountId            String                  @unique @map("account_id") @db.Uuid
+  tenantId             String                  @map("tenant_id") @db.Uuid
+  kind                 StudentKind
+  studentNumber        String?                 @map("student_number") @db.VarChar(50)
+  lifecycleState       StudentLifecycleState   @default(ENROLLED) @map("lifecycle_state")
+  classId              String?                 @map("class_id") @db.Uuid
+  residentCityCode     String?                 @map("resident_city_code") @db.VarChar(12)
+  registrationCityCode String?                 @map("registration_city_code") @db.VarChar(12)
+  profileFrozenUntil   DateTime?               @map("profile_frozen_until") @db.Timestamptz(3)
+  lastSelfEditedAt     DateTime?               @map("last_self_edited_at") @db.Timestamptz(3)
+  graduatedAt          DateTime?               @map("graduated_at") @db.Timestamptz(3)
+  createdAt            DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
+  account              Account                 @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  tenant               Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  cohortClass          CohortClass?            @relation(fields: [classId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  residentCity         AdministrativeDivision? @relation("StudentResidentCity", fields: [residentCityCode], references: [code], onDelete: Restrict)
+  registrationCity     AdministrativeDivision? @relation("StudentRegistrationCity", fields: [registrationCityCode], references: [code], onDelete: Restrict)
+
+  @@unique([tenantId, studentNumber])
+  @@index([tenantId, lifecycleState, graduatedAt])
+  @@index([classId])
+  @@map("student_profile")
+}
+
+model AuthSession {
+  id            String    @id @default(uuid()) @db.Uuid
+  accountId     String    @map("account_id") @db.Uuid
+  tokenHash     String    @unique @map("token_hash") @db.Char(64)
+  csrfTokenHash String    @map("csrf_token_hash") @db.Char(64)
+  deviceSummary String?   @map("device_summary") @db.VarChar(255)
+  expiresAt     DateTime  @map("expires_at") @db.Timestamptz(3)
+  lastUsedAt    DateTime  @default(now()) @map("last_used_at") @db.Timestamptz(3)
+  revokedAt     DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  account       Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId, expiresAt])
+  @@index([expiresAt, revokedAt])
+  @@map("auth_session")
+}
+
+model PlatformAccountEnrollment {
+  id                    String    @id @default(uuid()) @db.Uuid
+  accountId             String    @unique @map("account_id") @db.Uuid
+  tokenHash             String    @unique @map("token_hash") @db.Char(64)
+  pendingPasswordHash   String?   @map("pending_password_hash") @db.VarChar(255)
+  recoveryCodesIssuedAt DateTime? @map("recovery_codes_issued_at") @db.Timestamptz(3)
+  expiresAt             DateTime  @map("expires_at") @db.Timestamptz(3)
+  consumedAt            DateTime? @map("consumed_at") @db.Timestamptz(3)
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  account               Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt, consumedAt])
+  @@map("platform_account_enrollment")
+}
+
+model TotpCredential {
+  accountId        String    @id @map("account_id") @db.Uuid
+  secretCiphertext Bytes     @map("secret_ciphertext")
+  secretIv         Bytes     @map("secret_iv")
+  secretAuthTag    Bytes     @map("secret_auth_tag")
+  lastUsedTimeStep Int?      @map("last_used_time_step")
+  enabledAt        DateTime? @map("enabled_at") @db.Timestamptz(3)
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  account          Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@map("totp_credential")
+}
+
+model TotpRecoveryCode {
+  id         String    @id @default(uuid()) @db.Uuid
+  accountId  String    @map("account_id") @db.Uuid
+  codeHash   String    @map("code_hash") @db.VarChar(255)
+  consumedAt DateTime? @map("consumed_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  account    Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, codeHash])
+  @@index([accountId, consumedAt])
+  @@map("totp_recovery_code")
+}
+
+model LegalDocumentVersion {
+  id                   String              @id @default(uuid()) @db.Uuid
+  type                 LegalDocumentType
+  version              String              @db.VarChar(30)
+  status               LegalDocumentStatus @default(DRAFT)
+  content              String              @default("") @db.Text
+  contentHash          String              @map("content_hash") @db.Char(64)
+  createdByAccountId   String?             @map("created_by_account_id") @db.Uuid
+  publishedByAccountId String?             @map("published_by_account_id") @db.Uuid
+  publishedAt          DateTime?           @map("published_at") @db.Timestamptz(3)
+  createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdBy            Account?            @relation("LegalDocumentCreator", fields: [createdByAccountId], references: [id], onDelete: SetNull)
+  publishedBy          Account?            @relation("LegalDocumentPublisher", fields: [publishedByAccountId], references: [id], onDelete: SetNull)
+  consents             ProtocolConsent[]
+
+  @@unique([type, version])
+  @@index([createdByAccountId])
+  @@index([publishedByAccountId])
+  @@index([type, status])
+  @@map("legal_document_version")
+}
+
+model ProtocolConsent {
+  id                String               @id @default(uuid()) @db.Uuid
+  accountId         String               @map("account_id") @db.Uuid
+  documentVersionId String               @map("document_version_id") @db.Uuid
+  source            String               @db.VarChar(50)
+  ipAddress         String?              @map("ip_address") @db.VarChar(64)
+  createdAt         DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  account           Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  documentVersion   LegalDocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([accountId, documentVersionId])
+  @@index([documentVersionId])
+  @@map("protocol_consent")
+}
+
+model AuditEvent {
+  id             String   @id @default(uuid()) @db.Uuid
+  tenantId       String?  @map("tenant_id") @db.Uuid
+  actorAccountId String?  @map("actor_account_id") @db.Uuid
+  action         String   @db.VarChar(100)
+  targetType     String   @map("target_type") @db.VarChar(100)
+  targetId       String?  @map("target_id") @db.VarChar(100)
+  reason         String?  @db.Text
+  requestId      String?  @map("request_id") @db.VarChar(100)
+  before         Json?
+  after          Json?
+  occurredAt     DateTime @default(now()) @map("occurred_at") @db.Timestamptz(3)
+  tenant         Tenant?  @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  actor          Account? @relation("AuditActor", fields: [actorAccountId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, occurredAt])
+  @@index([actorAccountId, occurredAt])
+  @@index([targetType, targetId])
+  @@map("audit_event")
+}

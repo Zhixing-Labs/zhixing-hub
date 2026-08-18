@@ -1,0 +1,27 @@
+{
+  "name": "zhixing-hub",
+  "private": true,
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev:web": "pnpm --filter @zhixing/web dev",
+    "dev:api": "pnpm --filter @zhixing/api start:dev",
+    "dev:worker": "pnpm --filter @zhixing/worker start:dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "bootstrap:super-admin": "pnpm --filter @zhixing/server-core bootstrap:super-admin",
+    "openapi:export": "pnpm --filter @zhixing/api openapi:export",
+    "openapi:generate": "pnpm openapi:export && pnpm --filter @zhixing/api-client generate"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3"
+  },
+  "devDependencies": {
+    "prisma": "6.19.3"
+  }
+}

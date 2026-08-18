@@ -1,0 +1,3043 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/health/live": {
+      "get": {
+        "operationId": "HealthController_live",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "HealthController_ready",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/governance/legal-documents": {
+      "get": {
+        "operationId": "LegalDocumentGovernanceController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LegalDocumentDraftDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Governance legal documents"
+        ]
+      },
+      "post": {
+        "operationId": "LegalDocumentGovernanceController_create",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveLegalDocumentDraftDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalDocumentDraftDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Governance legal documents"
+        ]
+      }
+    },
+    "/api/v1/governance/legal-documents/{id}": {
+      "put": {
+        "operationId": "LegalDocumentGovernanceController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveLegalDocumentDraftDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalDocumentDraftDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Governance legal documents"
+        ]
+      }
+    },
+    "/api/v1/governance/legal-documents/publish-set": {
+      "post": {
+        "operationId": "LegalDocumentGovernanceController_publishSet",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishLegalDocumentSetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Governance legal documents"
+        ]
+      }
+    },
+    "/api/v1/account/security/totp/enrollments": {
+      "post": {
+        "operationId": "AccountSecurityController_startTotpEnrollment",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartTotpEnrollmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartedTotpEnrollmentDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Account security"
+        ]
+      }
+    },
+    "/api/v1/account/security/totp/enrollments/confirm": {
+      "post": {
+        "operationId": "AccountSecurityController_confirmTotpEnrollment",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmTotpEnrollmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryCodesDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Account security"
+        ]
+      }
+    },
+    "/api/v1/account/security/password": {
+      "post": {
+        "operationId": "AccountSecurityController_changePassword",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Account security"
+        ]
+      }
+    },
+    "/api/v1/account/security/totp/disable": {
+      "post": {
+        "operationId": "AccountSecurityController_disableTotp",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisableTotpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Account security"
+        ]
+      }
+    },
+    "/api/v1/auth/legal-documents/current": {
+      "get": {
+        "operationId": "IdentityController_currentLegalDocuments",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CurrentLegalDocumentDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/captcha/challenges": {
+      "post": {
+        "operationId": "IdentityController_issueCaptchaChallenge",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaptchaChallengeDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/user/activation/codes": {
+      "post": {
+        "operationId": "IdentityController_requestUserActivationCode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestUserActivationCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivationCodeDeliveryDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/user/activation/confirm": {
+      "post": {
+        "operationId": "IdentityController_confirmUserActivation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmUserActivationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/user/sms-login/codes": {
+      "post": {
+        "operationId": "IdentityController_requestSmsLoginCode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestSmsLoginCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmsLoginCodeDeliveryDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/user/sms-login/confirm": {
+      "post": {
+        "operationId": "IdentityController_confirmSmsLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmSmsLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/sessions": {
+      "post": {
+        "operationId": "IdentityController_createUserPasswordSession",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserPasswordSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/platform/sessions": {
+      "post": {
+        "operationId": "IdentityController_createPlatformSession",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlatformSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/platform/enrollments": {
+      "post": {
+        "operationId": "IdentityController_startPlatformEnrollment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartPlatformEnrollmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartedPlatformEnrollmentDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/platform/enrollments/confirm": {
+      "post": {
+        "operationId": "IdentityController_confirmPlatformEnrollment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmPlatformEnrollmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfirmedPlatformEnrollmentDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/platform/enrollments/finish": {
+      "post": {
+        "operationId": "IdentityController_finishPlatformEnrollment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinishPlatformEnrollmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/auth/sessions/current": {
+      "get": {
+        "operationId": "IdentityController_currentSession",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionAccountDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Identity"
+        ]
+      },
+      "delete": {
+        "operationId": "IdentityController_revokeCurrentSession",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v1/platform/accounts": {
+      "post": {
+        "operationId": "PlatformAccountController_create",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlatformAccountDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedPlatformAccountDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Platform accounts"
+        ]
+      }
+    },
+    "/api/v1/platform/accounts/{accountId}/disable": {
+      "patch": {
+        "operationId": "PlatformAccountController_disable",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Platform accounts"
+        ]
+      }
+    },
+    "/api/v1/platform/accounts/{accountId}/totp-reset": {
+      "post": {
+        "operationId": "PlatformAccountController_resetTotp",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Platform accounts"
+        ]
+      }
+    },
+    "/api/v1/university/students/{accountId}/totp-disable": {
+      "post": {
+        "operationId": "StudentSecurityController_disableStudentTotp",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University student security"
+        ]
+      }
+    },
+    "/api/v1/organizations/administrative-divisions": {
+      "get": {
+        "operationId": "OrganizationController_administrativeDivisions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdministrativeDivisionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/organizations/current": {
+      "get": {
+        "operationId": "OrganizationController_current",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentOrganizationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/organizations/universities": {
+      "post": {
+        "operationId": "OrganizationController_createUniversity",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUniversityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedTenantDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/organizations/universities/{tenantId}/admins": {
+      "post": {
+        "operationId": "OrganizationController_addUniversityAdmin",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitialTenantAdminDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedUniversityAdminDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/organizations/enterprises": {
+      "post": {
+        "operationId": "OrganizationController_createEnterprise",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnterpriseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedTenantDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/organizations/governments": {
+      "post": {
+        "operationId": "OrganizationController_createGovernment",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGovernmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedTenantDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/university/org-tree": {
+      "get": {
+        "operationId": "UniversityOrganizationController_orgTree",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UniversityOrgTreeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University organization"
+        ]
+      }
+    },
+    "/api/v1/university/campuses": {
+      "post": {
+        "operationId": "UniversityOrganizationController_createCampus",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampusDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University organization"
+        ]
+      }
+    },
+    "/api/v1/university/colleges": {
+      "post": {
+        "operationId": "UniversityOrganizationController_createCollege",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollegeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollegeSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University organization"
+        ]
+      }
+    },
+    "/api/v1/university/colleges/{collegeId}/campuses": {
+      "put": {
+        "operationId": "UniversityOrganizationController_replaceCollegeCampuses",
+        "parameters": [
+          {
+            "name": "collegeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceCollegeCampusesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University organization"
+        ]
+      }
+    },
+    "/api/v1/university/majors": {
+      "post": {
+        "operationId": "UniversityOrganizationController_createMajor",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMajorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MajorSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University organization"
+        ]
+      }
+    },
+    "/api/v1/university/classes": {
+      "post": {
+        "operationId": "UniversityOrganizationController_createClass",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClassDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University organization"
+        ]
+      }
+    },
+    "/api/v1/university/classes/{classId}/counselor": {
+      "patch": {
+        "operationId": "UniversityOrganizationController_assignClassCounselor",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignClassCounselorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University organization"
+        ]
+      }
+    },
+    "/api/v1/university/members": {
+      "post": {
+        "operationId": "UniversityOrganizationController_createMember",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUniversityMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UniversityMemberDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University organization"
+        ]
+      }
+    },
+    "/api/v1/university/classes/{classId}/students/import": {
+      "post": {
+        "operationId": "CounselorStudentImportController_importStudents",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportClassStudentsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentImportResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University student import"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Zhixing Hub API",
+    "description": "知行工坊模块化单体业务接口",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "cookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "zhixing_session"
+      }
+    },
+    "schemas": {
+      "LegalDocumentDraftDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "USER_AGREEMENT",
+              "PRIVACY_POLICY"
+            ]
+          },
+          "version": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PUBLISHED",
+              "RETIRED"
+            ]
+          },
+          "content": {
+            "type": "string"
+          },
+          "contentHash": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "version",
+          "status",
+          "content",
+          "contentHash",
+          "publishedAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "SaveLegalDocumentDraftDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "USER_AGREEMENT",
+              "PRIVACY_POLICY"
+            ]
+          },
+          "version": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "type",
+          "version",
+          "content"
+        ]
+      },
+      "PublishLegalDocumentSetDto": {
+        "type": "object",
+        "properties": {
+          "userAgreementDraftId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "privacyPolicyDraftId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "userAgreementDraftId",
+          "privacyPolicyDraftId"
+        ]
+      },
+      "StartTotpEnrollmentDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "password"
+        ]
+      },
+      "StartedTotpEnrollmentDto": {
+        "type": "object",
+        "properties": {
+          "secret": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "secret",
+          "uri"
+        ]
+      },
+      "ConfirmTotpEnrollmentDto": {
+        "type": "object",
+        "properties": {
+          "totpCode": {
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "totpCode"
+        ]
+      },
+      "RecoveryCodesDto": {
+        "type": "object",
+        "properties": {
+          "recoveryCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "recoveryCodes"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "newPassword": {
+            "type": "string",
+            "minLength": 8,
+            "writeOnly": true
+          },
+          "secondFactorCode": {
+            "type": "string",
+            "description": "已启用 TOTP 时必填",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
+      },
+      "DisableTotpDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "secondFactorCode": {
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "password",
+          "secondFactorCode"
+        ]
+      },
+      "CurrentLegalDocumentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "USER_AGREEMENT",
+              "PRIVACY_POLICY"
+            ]
+          },
+          "version": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "contentHash": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "version",
+          "content",
+          "contentHash",
+          "publishedAt"
+        ]
+      },
+      "CaptchaChallengeDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "mock": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "token",
+          "mock"
+        ]
+      },
+      "RequestUserActivationCodeDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "captchaToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone",
+          "captchaToken"
+        ]
+      },
+      "ActivationCodeDeliveryDto": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string"
+          },
+          "mock": {
+            "type": "boolean"
+          },
+          "debugCode": {
+            "type": "string",
+            "description": "仅 Mock 环境返回，正式短信适配器不包含此字段"
+          }
+        },
+        "required": [
+          "messageId",
+          "mock"
+        ]
+      },
+      "ConfirmUserActivationDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "code": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "writeOnly": true
+          },
+          "consentDocumentVersionIds": {
+            "description": "当前用户协议与隐私政策版本 ID；首次部署未发布时为空数组",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "phone",
+          "code",
+          "password",
+          "consentDocumentVersionIds"
+        ]
+      },
+      "SessionAccountDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "PLATFORM_ADMIN",
+              "END_USER"
+            ]
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "SUPER_ADMIN",
+              "ORGANIZATION_ADMIN",
+              "OPERATIONS_SPECIALIST",
+              "PLATFORM_DASHBOARD",
+              "UNIVERSITY_ADMIN",
+              "COLLEGE_ADMIN",
+              "PROGRAM_LEAD",
+              "COUNSELOR",
+              "STUDENT",
+              "UNIVERSITY_DASHBOARD",
+              "ENTERPRISE_ADMIN",
+              "HR",
+              "PROJECT_LEAD",
+              "MENTOR",
+              "ENTERPRISE_DASHBOARD",
+              "GOVERNMENT_DASHBOARD_ADMIN",
+              "GOVERNMENT_DASHBOARD"
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "displayName",
+          "kind",
+          "tenantId",
+          "role"
+        ]
+      },
+      "CreatedSessionDto": {
+        "type": "object",
+        "properties": {
+          "csrfToken": {
+            "type": "string",
+            "description": "用于同源写请求的 CSRF 双提交令牌"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "account": {
+            "$ref": "#/components/schemas/SessionAccountDto"
+          }
+        },
+        "required": [
+          "csrfToken",
+          "expiresAt",
+          "account"
+        ]
+      },
+      "RequestSmsLoginCodeDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "captchaToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone",
+          "captchaToken"
+        ]
+      },
+      "SmsLoginCodeDeliveryDto": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string"
+          },
+          "mock": {
+            "type": "boolean"
+          },
+          "debugCode": {
+            "type": "string",
+            "description": "仅 Mock 环境返回，正式短信适配器不包含此字段"
+          },
+          "secondFactorRequired": {
+            "type": "boolean",
+            "description": "该账号已绑定 TOTP，确认短信码时还须提交第二因子"
+          }
+        },
+        "required": [
+          "messageId",
+          "mock",
+          "secondFactorRequired"
+        ]
+      },
+      "ConfirmSmsLoginDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "code": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "secondFactorCode": {
+            "type": "string",
+            "description": "账号已绑定 TOTP 时必填：六位动态码或一次性恢复码",
+            "writeOnly": true
+          },
+          "consentDocumentVersionIds": {
+            "description": "当前用户协议与隐私政策版本 ID；首次部署未发布时为空数组",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "phone",
+          "code",
+          "consentDocumentVersionIds"
+        ]
+      },
+      "CreateUserPasswordSessionDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "用户端中国大陆手机号；平台管理账号不使用本入口",
+            "example": "13800138000"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "writeOnly": true
+          },
+          "secondFactorCode": {
+            "type": "string",
+            "description": "账号已绑定 TOTP 时必填：六位动态码或一次性恢复码",
+            "writeOnly": true
+          },
+          "consentDocumentVersionIds": {
+            "description": "当前用户协议与隐私政策版本 ID；首次部署未发布时为空数组",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "phone",
+          "password",
+          "consentDocumentVersionIds"
+        ]
+      },
+      "CreatePlatformSessionDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "平台管理账号唯一用户名；平台账号不绑定手机号",
+            "example": "super-admin"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "writeOnly": true
+          },
+          "secondFactorCode": {
+            "type": "string",
+            "description": "验证器六位动态码或一次性恢复码",
+            "example": "123456",
+            "writeOnly": true
+          },
+          "consentDocumentVersionIds": {
+            "description": "当前用户协议与隐私政策版本 ID；首次部署未发布时为空数组",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "username",
+          "password",
+          "secondFactorCode",
+          "consentDocumentVersionIds"
+        ]
+      },
+      "StartPlatformEnrollmentDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "initialPassword": {
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "username",
+          "initialPassword"
+        ]
+      },
+      "StartedPlatformEnrollmentDto": {
+        "type": "object",
+        "properties": {
+          "enrollmentToken": {
+            "type": "string"
+          },
+          "totpSecret": {
+            "type": "string",
+            "description": "仅本次响应展示，供无法扫码时手工录入验证器"
+          },
+          "totpUri": {
+            "type": "string",
+            "description": "供验证器扫码或导入的 otpauth URI"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "enrollmentToken",
+          "totpSecret",
+          "totpUri",
+          "expiresAt"
+        ]
+      },
+      "ConfirmPlatformEnrollmentDto": {
+        "type": "object",
+        "properties": {
+          "enrollmentToken": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "newPassword": {
+            "type": "string",
+            "minLength": 12,
+            "writeOnly": true
+          },
+          "totpCode": {
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "enrollmentToken",
+          "newPassword",
+          "totpCode"
+        ]
+      },
+      "ConfirmedPlatformEnrollmentDto": {
+        "type": "object",
+        "properties": {
+          "recoveryCodesConfirmationToken": {
+            "type": "string",
+            "description": "确认恢复码已保存时使用的一次性短效令牌"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "recoveryCodes": {
+            "description": "仅本次响应展示，须立即离线保存",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "recoveryCodesConfirmationToken",
+          "expiresAt",
+          "recoveryCodes"
+        ]
+      },
+      "FinishPlatformEnrollmentDto": {
+        "type": "object",
+        "properties": {
+          "recoveryCodesConfirmationToken": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "recoveryCodesSaved": {
+            "type": "boolean",
+            "description": "必须明确确认恢复码已离线保存，方可激活并签发会话",
+            "enum": [
+              true
+            ]
+          },
+          "consentDocumentVersionIds": {
+            "description": "当前用户协议与隐私政策版本 ID；首次部署未发布时为空数组",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "recoveryCodesConfirmationToken",
+          "recoveryCodesSaved",
+          "consentDocumentVersionIds"
+        ]
+      },
+      "CreatePlatformAccountDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ORGANIZATION_ADMIN",
+              "OPERATIONS_SPECIALIST",
+              "PLATFORM_DASHBOARD"
+            ]
+          }
+        },
+        "required": [
+          "username",
+          "displayName",
+          "role"
+        ]
+      },
+      "CreatedPlatformAccountDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ORGANIZATION_ADMIN",
+              "OPERATIONS_SPECIALIST",
+              "PLATFORM_DASHBOARD"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_ACTIVATION",
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "initialPassword": {
+            "type": "string",
+            "description": "仅本次响应展示，由超管安全交付给账号本人",
+            "minLength": 12,
+            "readOnly": true
+          }
+        },
+        "required": [
+          "accountId",
+          "username",
+          "displayName",
+          "role",
+          "status",
+          "initialPassword"
+        ]
+      },
+      "AdministrativeDivisionDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "PROVINCE",
+              "PREFECTURE"
+            ]
+          },
+          "parentCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "level",
+          "parentCode"
+        ]
+      },
+      "CurrentOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "PLATFORM",
+              "UNIVERSITY",
+              "ENTERPRISE",
+              "GOVERNMENT"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "name",
+          "status"
+        ]
+      },
+      "InitialTenantAdminDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "description": "用户端管理员手机号；租户管理员不是平台管理账号",
+            "example": "13800138000"
+          }
+        },
+        "required": [
+          "displayName",
+          "phone"
+        ]
+      },
+      "CreateUniversityDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "initialAdmin": {
+            "$ref": "#/components/schemas/InitialTenantAdminDto"
+          }
+        },
+        "required": [
+          "name",
+          "initialAdmin"
+        ]
+      },
+      "CreatedTenantDto": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "UNIVERSITY",
+              "ENTERPRISE",
+              "GOVERNMENT"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "initialAdminAccountId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "tenantId",
+          "type",
+          "name",
+          "initialAdminAccountId"
+        ]
+      },
+      "CreatedUniversityAdminDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "accountId"
+        ]
+      },
+      "CreateEnterpriseDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "initialAdmin": {
+            "$ref": "#/components/schemas/InitialTenantAdminDto"
+          },
+          "natureTagCode": {
+            "type": "string",
+            "example": "GENERAL"
+          },
+          "industryCategoryCode": {
+            "type": "string",
+            "example": "I"
+          },
+          "locationCodes": {
+            "description": "至少一个受控地级市行政区划代码",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "initialAdmin",
+          "natureTagCode",
+          "industryCategoryCode",
+          "locationCodes"
+        ]
+      },
+      "CreateGovernmentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "initialAdmin": {
+            "$ref": "#/components/schemas/InitialTenantAdminDto"
+          },
+          "divisionCode": {
+            "type": "string"
+          },
+          "visibleUniversityTenantIds": {
+            "description": "政务端允许聚合查看的高校租户白名单",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "initialAdmin",
+          "divisionCode",
+          "visibleUniversityTenantIds"
+        ]
+      },
+      "CampusDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "divisionCode": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "divisionCode",
+          "status"
+        ]
+      },
+      "CollegeCampusLinkDto": {
+        "type": "object",
+        "properties": {
+          "campusId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "campusId",
+          "sortOrder"
+        ]
+      },
+      "OrgTreeClassDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gradeLabel": {
+            "type": "string"
+          },
+          "counselorMembershipId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "gradeLabel",
+          "counselorMembershipId",
+          "status"
+        ]
+      },
+      "OrgTreeMajorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          },
+          "classes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrgTreeClassDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status",
+          "classes"
+        ]
+      },
+      "OrgTreeCollegeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          },
+          "campuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollegeCampusLinkDto"
+            }
+          },
+          "majors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrgTreeMajorDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status",
+          "campuses",
+          "majors"
+        ]
+      },
+      "UniversityMemberDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "membershipId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "UNIVERSITY_ADMIN",
+              "UNIVERSITY_DASHBOARD",
+              "COLLEGE_ADMIN",
+              "PROGRAM_LEAD",
+              "COUNSELOR"
+            ]
+          },
+          "collegeId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "accountStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING_ACTIVATION",
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "membershipStatus": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "membershipId",
+          "displayName",
+          "phone",
+          "role",
+          "collegeId",
+          "accountStatus",
+          "membershipStatus"
+        ]
+      },
+      "UniversityOrgTreeDto": {
+        "type": "object",
+        "properties": {
+          "campuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampusDto"
+            }
+          },
+          "colleges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrgTreeCollegeDto"
+            }
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UniversityMemberDto"
+            }
+          }
+        },
+        "required": [
+          "campuses",
+          "colleges",
+          "members"
+        ]
+      },
+      "CreateCampusDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "divisionCode": {
+            "type": "string",
+            "description": "地级市行政区划代码",
+            "example": "640100"
+          }
+        },
+        "required": [
+          "name",
+          "divisionCode"
+        ]
+      },
+      "CreateCollegeDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "campusIds": {
+            "description": "至少一个本校校区，顺序即学院校区排序",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "campusIds"
+        ]
+      },
+      "CollegeSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status"
+        ]
+      },
+      "ReplaceCollegeCampusesDto": {
+        "type": "object",
+        "properties": {
+          "campusIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "campusIds"
+        ]
+      },
+      "CreateMajorDto": {
+        "type": "object",
+        "properties": {
+          "collegeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "collegeId",
+          "name"
+        ]
+      },
+      "MajorSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "collegeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "collegeId",
+          "name",
+          "status"
+        ]
+      },
+      "CreateClassDto": {
+        "type": "object",
+        "properties": {
+          "majorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gradeLabel": {
+            "type": "string",
+            "example": "2026"
+          },
+          "counselorMembershipId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "majorId",
+          "name",
+          "gradeLabel"
+        ]
+      },
+      "ClassSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "majorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "gradeLabel": {
+            "type": "string"
+          },
+          "counselorMembershipId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "majorId",
+          "name",
+          "gradeLabel",
+          "counselorMembershipId",
+          "status"
+        ]
+      },
+      "AssignClassCounselorDto": {
+        "type": "object",
+        "properties": {
+          "counselorMembershipId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "required": [
+          "counselorMembershipId"
+        ]
+      },
+      "CreateUniversityMemberDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "UNIVERSITY_DASHBOARD",
+              "COLLEGE_ADMIN",
+              "PROGRAM_LEAD",
+              "COUNSELOR"
+            ]
+          },
+          "collegeId": {
+            "type": "string",
+            "description": "院管 / 专业负责人 / 辅导员必填",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "displayName",
+          "phone",
+          "role"
+        ]
+      },
+      "ImportClassStudentsDto": {
+        "type": "object",
+        "properties": {
+          "csv": {
+            "type": "string",
+            "description": "UTF-8 CSV 全文（原始文件只在请求内解析，不落对象存储）。表头必须为「姓名,学号,手机号,性别」，字段一律必填；性别只接受男 / 女；单次至多 2000 行。班级由路径参数绑定，CSV 无班级字段。",
+            "example": "姓名,学号,手机号,性别\n林晓,2026010101,13800138001,女"
+          }
+        },
+        "required": [
+          "csv"
+        ]
+      },
+      "PhoneOccupationDto": {
+        "type": "object",
+        "properties": {
+          "subjectType": {
+            "type": "string",
+            "enum": [
+              "PLATFORM_STUDENT",
+              "UNIVERSITY_STUDENT_CURRENT_TENANT",
+              "UNIVERSITY_STUDENT_OTHER_TENANT",
+              "UNIVERSITY_STAFF",
+              "ENTERPRISE_MEMBER",
+              "GOVERNMENT_ACCOUNT",
+              "UNKNOWN"
+            ]
+          },
+          "tenantName": {
+            "type": "string",
+            "description": "占用该手机号的主体所在租户名称（可识别学校 / 企业）",
+            "nullable": true
+          },
+          "studentNumber": {
+            "type": "string",
+            "description": "占用者为高校认证学员时的学号（本校占用时用于核对名册）",
+            "nullable": true
+          },
+          "guidance": {
+            "type": "string",
+            "description": "处理指引（如：该号已注册为平台学员，请学生先自助注销后重导）"
+          }
+        },
+        "required": [
+          "subjectType",
+          "tenantName",
+          "studentNumber",
+          "guidance"
+        ]
+      },
+      "StudentImportFailureDto": {
+        "type": "object",
+        "properties": {
+          "row": {
+            "type": "number",
+            "description": "物理记录行号（含表头，从 2 起）"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "studentNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "INVALID_ROW",
+              "INVALID_NAME",
+              "INVALID_STUDENT_NUMBER",
+              "INVALID_PHONE",
+              "INVALID_GENDER",
+              "DUPLICATE_STUDENT_NUMBER_IN_FILE",
+              "DUPLICATE_PHONE_IN_FILE",
+              "PHONE_ALREADY_USED",
+              "STUDENT_NUMBER_ALREADY_USED"
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "description": "失败原因说明（面向辅导员的中文文案）"
+          },
+          "occupation": {
+            "description": "仅 PHONE_ALREADY_USED 提供：手机号占用主体类型与处理指引",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PhoneOccupationDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "row",
+          "name",
+          "studentNumber",
+          "phone",
+          "reason",
+          "detail"
+        ]
+      },
+      "StudentImportResultDto": {
+        "type": "object",
+        "properties": {
+          "createdCount": {
+            "type": "number",
+            "description": "成功导入并创建的学生数（其余失败行见 failures）"
+          },
+          "failures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentImportFailureDto"
+            }
+          }
+        },
+        "required": [
+          "createdCount",
+          "failures"
+        ]
+      }
+    }
+  }
+}

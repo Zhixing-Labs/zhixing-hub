@@ -1,0 +1,24 @@
+{
+  "name": "@zhixing/api-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "由 OpenAPI 生成的 Web 客户端；禁止手写 DTO 镜像（《11》第 4 节）。",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "generate": "openapi-ts -i ./openapi.json -o ./src -c @hey-api/client-fetch",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "^0.99.0",
+    "typescript": "^5.9.3"
+  }
+}

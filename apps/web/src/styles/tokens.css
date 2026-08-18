@@ -1,0 +1,85 @@
+@import 'tailwindcss';
+
+/*
+ * 语义令牌种子（《10》第 2.3 节）——颜色唯一取值处。
+ * 完整令牌表随界面基座阶段落齐；组件内严禁写死色阶值，
+ * 新增令牌一律明暗成对提交。成长激励层（R13）新增：
+ * 热力图蓝阶、星级点缀、强度档、等级紫阶、图表辅助色。
+ */
+:root {
+  --bg-canvas: #f9fafd;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f2f4f8;
+  --text-primary: #1d2129;
+  --text-secondary: #626a7a;
+  --text-tertiary: #7f8798;
+  --border-default: #e6e9ef;
+  --border-strong: #dee2e9;
+  --brand-solid: #277fe4;
+  --brand-text: #1d66c7;
+  --brand-area: rgba(39, 127, 228, 0.18);
+  --focus-ring: #277fe4;
+  --success: #0da740;
+  --warning: #ff7931;
+
+  /* R13：活跃热力图 5 档品牌蓝阶（《10》C20） */
+  --heat-1: #d6e8fe;
+  --heat-2: #b0d2fc;
+  --heat-3: #4e9cf0;
+  --heat-4: #1d66c7;
+  --heat-5: #0e3a78;
+
+  /* R13：星级点缀（《10》2.3 star/accent） */
+  --star-accent: #f1a85a;
+
+  /* R13：强度档中性色（《10》2.4） */
+  --strength-strong: #3c424f;
+  --strength-medium: #626a7a;
+  --strength-weak: #9fa7b7;
+
+  /* R13：等级紫罗兰阶前景（《10》2.4） */
+  --level-l1: #5229e6;
+  --level-l2: #3f19c2;
+  --level-l3: #653aff;
+  --level-l4: #3f19c2;
+}
+
+html.dark {
+  --bg-canvas: #0f1115;
+  --bg-surface: #16191d;
+  --bg-subtle: #21252b;
+  --text-primary: #e0e4ec;
+  --text-secondary: #9098a8;
+  --text-tertiary: #626a7a;
+  --border-default: #272c35;
+  --border-strong: #2e333e;
+  --brand-solid: #277fe4;
+  --brand-text: #7eb8f8;
+  --brand-area: rgba(126, 184, 248, 0.16);
+  --focus-ring: #4e9cf0;
+  --success: #0da740;
+  --warning: #ff7931;
+
+  --heat-1: rgba(39, 127, 228, 0.16);
+  --heat-2: rgba(39, 127, 228, 0.3);
+  --heat-3: rgba(39, 127, 228, 0.52);
+  --heat-4: rgba(39, 127, 228, 0.76);
+  --heat-5: rgba(120, 175, 245, 0.95);
+
+  --star-accent: #f1a85a;
+
+  --strength-strong: #c0c7d4;
+  --strength-medium: #9098a8;
+  --strength-weak: #535b6b;
+
+  --level-l1: #c7baff;
+  --level-l2: #c7baff;
+  --level-l3: #714ffc;
+  --level-l4: #8466ff;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>知行工坊</title>
+    <script>
+      // 首屏防闪烁：按存储偏好先设皮肤类（《10》第 2.3 节，无类时由媒体查询兜底）
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('zhixing-theme');
+        } catch (e) {
+          /* 隐私模式下忽略 */
+        }
+        if (
+          stored === 'dark' ||
+          (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+          document.documentElement.classList.add('dark');
+        } else if (stored === 'light') {
+          document.documentElement.classList.add('light');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

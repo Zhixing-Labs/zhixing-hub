@@ -1,0 +1,56 @@
+# 开发与单机部署基础设施（《11》第 16.1 节）。
+# 当前提供数据服务；web/api/worker 应用容器随可部署产物补齐。
+# 生产经 1Panel OpenResty 作公网唯一入口，应用仍负责身份、租户与业务频控。
+
+name: zhixing-hub
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zhixing
+      POSTGRES_PASSWORD: zhixing_dev
+      POSTGRES_DB: zhixing
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zhixing -d zhixing"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: zhixing
+      MINIO_ROOT_PASSWORD: zhixing_dev
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+  miniodata:

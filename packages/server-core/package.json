@@ -1,0 +1,31 @@
+{
+  "name": "@zhixing/server-core",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "bootstrap:super-admin": "pnpm build && node dist/bootstrap-super-admin.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "dotenv": "^17.4.2",
+    "prisma": "6.19.3",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.2.1",
+    "@nestjs/core": "^11.2.1",
+    "@prisma/client": "6.19.3",
+    "argon2": "^0.45.1",
+    "ioredis": "^6.0.0",
+    "otplib": "^13.4.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  }
+}
