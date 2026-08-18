@@ -93,6 +93,25 @@ enum PhoneChangeStatus {
   REJECTED
 }
 
+enum ClassTransferStatus {
+  PENDING_OUTGOING
+  PENDING_INCOMING
+  APPROVED
+  REJECTED
+}
+
+enum OnboardingLeadKind {
+  UNIVERSITY
+  ENTERPRISE
+}
+
+enum OnboardingLeadStatus {
+  NEW
+  IN_PROGRESS
+  OPENED
+  CLOSED
+}
+
 enum LegalDocumentStatus {
   DRAFT
   PUBLISHED
@@ -160,7 +179,9 @@ model Tenant {
   memberships      Membership[]
   studentProfiles  StudentProfile[]
   retiredStudentNumbers RetiredStudentNumber[]
-  auditEvents      AuditEvent[]
+  auditEvents           AuditEvent[]
+  staffPostHandovers    StaffPostHandover[]
+  classTransferRequests ClassTransferRequest[]
 
   @@unique([type, name])
   @@index([type, status])
@@ -316,8 +337,10 @@ model CohortClass {
   updatedAt             DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
   tenant                Tenant           @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   major                 Major            @relation(fields: [majorId, tenantId], references: [id, tenantId], onDelete: Restrict)
-  counselor             Membership?      @relation("ClassCounselor", fields: [counselorMembershipId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  counselor             Membership?           @relation("ClassCounselor", fields: [counselorMembershipId, tenantId], references: [id, tenantId], onDelete: Restrict)
   studentProfiles       StudentProfile[]
+  transfersFrom         ClassTransferRequest[] @relation("ClassTransferFrom")
+  transfersTo           ClassTransferRequest[] @relation("ClassTransferTo")
 
   @@unique([majorId, name])
   @@unique([id, tenantId])
@@ -362,9 +385,11 @@ model Account {
   totpCredential          TotpCredential?
   totpRecoveryCodes       TotpRecoveryCode[]
   protocolConsents        ProtocolConsent[]
-  phoneChangeRequests     PhoneChangeRequest[]
-  phoneChangeResolutions  PhoneChangeRequest[]       @relation("PhoneChangeResolver")
-  auditEventsAsActor      AuditEvent[]               @relation("AuditActor")
+  phoneChangeRequests      PhoneChangeRequest[]
+  phoneChangeResolutions   PhoneChangeRequest[]       @relation("PhoneChangeResolver")
+  classTransferRequests    ClassTransferRequest[]
+  classTransferResolutions ClassTransferRequest[]     @relation("ClassTransferResolver")
+  auditEventsAsActor       AuditEvent[]               @relation("AuditActor")
   legalDocumentsCreated   LegalDocumentVersion[]     @relation("LegalDocumentCreator")
   legalDocumentsPublished LegalDocumentVersion[]     @relation("LegalDocumentPublisher")
 
@@ -388,8 +413,10 @@ model Membership {
   tenant           Tenant         @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   department       Department?    @relation(fields: [departmentId, tenantId], references: [id, tenantId], onDelete: Restrict)
   college          College?       @relation(fields: [collegeId, tenantId], references: [id, tenantId], onDelete: Restrict)
-  major            Major?         @relation(fields: [majorId, tenantId], references: [id, tenantId], onDelete: Restrict)
-  counseledClasses CohortClass[]  @relation("ClassCounselor")
+  major              Major?              @relation(fields: [majorId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  counseledClasses   CohortClass[]       @relation("ClassCounselor")
+  staffHandoversFrom StaffPostHandover[] @relation("StaffHandoverFrom")
+  staffHandoversTo   StaffPostHandover[] @relation("StaffHandoverTo")
 
   @@unique([id, tenantId])
   @@index([tenantId, role, status])
@@ -552,6 +579,67 @@ model PhoneChangeRequest {
   @@index([accountId, status])
   @@index([status, createdAt])
   @@map("phone_change_request")
+}
+
+// 教师岗位移交（《07》5.7）：辅导员改配全部班级；专业负责人在 Learning 落地前
+// 只记录继任。同一来源成员至多一条记录，停用前可改继任。
+model StaffPostHandover {
+  id               String     @id @default(uuid()) @db.Uuid
+  tenantId         String     @map("tenant_id") @db.Uuid
+  fromMembershipId String     @map("from_membership_id") @db.Uuid
+  toMembershipId   String     @map("to_membership_id") @db.Uuid
+  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  tenant           Tenant     @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  fromMembership   Membership @relation("StaffHandoverFrom", fields: [fromMembershipId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  toMembership     Membership @relation("StaffHandoverTo", fields: [toMembershipId, tenantId], references: [id, tenantId], onDelete: Restrict)
+
+  @@unique([fromMembershipId])
+  @@index([tenantId, toMembershipId])
+  @@map("staff_post_handover")
+}
+
+// 同学院内转班（《07》6.1）。未决件部分唯一索引见迁移 SQL。
+model ClassTransferRequest {
+  id                  String              @id @default(uuid()) @db.Uuid
+  tenantId            String              @map("tenant_id") @db.Uuid
+  studentAccountId    String              @map("student_account_id") @db.Uuid
+  fromClassId         String              @map("from_class_id") @db.Uuid
+  toClassId           String              @map("to_class_id") @db.Uuid
+  status              ClassTransferStatus @default(PENDING_OUTGOING)
+  createdAt           DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  outgoingResolvedAt  DateTime?           @map("outgoing_resolved_at") @db.Timestamptz(3)
+  incomingResolvedAt  DateTime?           @map("incoming_resolved_at") @db.Timestamptz(3)
+  resolvedAt          DateTime?           @map("resolved_at") @db.Timestamptz(3)
+  resolvedByAccountId String?             @map("resolved_by_account_id") @db.Uuid
+  tenant              Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  student             Account             @relation(fields: [studentAccountId], references: [id], onDelete: Cascade)
+  fromClass           CohortClass         @relation("ClassTransferFrom", fields: [fromClassId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  toClass             CohortClass         @relation("ClassTransferTo", fields: [toClassId, tenantId], references: [id, tenantId], onDelete: Restrict)
+  resolvedBy          Account?            @relation("ClassTransferResolver", fields: [resolvedByAccountId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, status])
+  @@index([fromClassId, status])
+  @@index([toClassId, status])
+  @@index([studentAccountId, status])
+  @@map("class_transfer_request")
+}
+
+// 介绍首页入驻线索（《04》4.11、《07》3.1）：不开通账户、不进审核队列。
+model OnboardingLead {
+  id                String               @id @default(uuid()) @db.Uuid
+  kind              OnboardingLeadKind
+  institutionName   String               @map("institution_name") @db.VarChar(200)
+  contactName       String               @map("contact_name") @db.VarChar(100)
+  contactMethod     String               @map("contact_method") @db.VarChar(100)
+  intent            String               @db.VarChar(2000)
+  status            OnboardingLeadStatus @default(NEW)
+  createdAt         DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  statusChangedAt   DateTime?            @map("status_changed_at") @db.Timestamptz(3)
+
+  @@index([status, createdAt])
+  @@index([kind, createdAt])
+  @@map("onboarding_lead")
 }
 
 model AuditEvent {

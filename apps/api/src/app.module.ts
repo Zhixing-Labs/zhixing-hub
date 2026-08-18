@@ -22,8 +22,21 @@ import { StudentProfileController } from './identity/student-profile.controller'
 import { StudentSecurityController } from './identity/student-security.controller';
 import { CounselorStudentImportController } from './organization/counselor-student-import.controller';
 import { OrganizationController } from './organization/organization.controller';
+import {
+  OrganizationOnboardingLeadController,
+  PublicOnboardingLeadController,
+} from './organization/onboarding-lead.controller';
+import { EnterpriseOrganizationController } from './organization/enterprise-organization.controller';
 import { UniversityOrganizationController } from './organization/university-organization.controller';
+import {
+  StudentClassTransferController,
+  UniversityStaffController,
+} from './organization/university-staff.controller';
 import { UniversityStudentController } from './organization/university-student.controller';
+import {
+  GovernmentOrganizationController,
+  PublicAcademyController,
+} from './organization/government-organization.controller';
 
 @Module({
   imports: [ServerCoreModule],
@@ -39,9 +52,16 @@ import { UniversityStudentController } from './organization/university-student.c
     StudentProfileController,
     StudentSecurityController,
     OrganizationController,
+    PublicOnboardingLeadController,
+    OrganizationOnboardingLeadController,
     UniversityOrganizationController,
+    UniversityStaffController,
+    StudentClassTransferController,
     CounselorStudentImportController,
     UniversityStudentController,
+    EnterpriseOrganizationController,
+    GovernmentOrganizationController,
+    PublicAcademyController,
   ],
   providers: [SessionAuthGuard, CsrfGuard],
 })

@@ -13,7 +13,6 @@ const universityOrganization = new UniversityOrganizationService(
 const studentImport = new CounselorStudentImportService(prisma, requestContext);
 
 const universityTenantId = '10000000-0000-4000-8000-000000000301';
-const publicAcademyTenantId = '10000000-0000-4000-8000-000000000302';
 const enterpriseTenantId = '10000000-0000-4000-8000-000000000303';
 const universityAdminAccountId = '20000000-0000-4000-8000-000000000301';
 
@@ -28,6 +27,9 @@ describe('Counselor student CSV import', () => {
   let counselorAccountId = '';
   let collegeAdminAccountId = '';
   let unassignedClassId = '';
+  let academyTenantId = '10000000-0000-4000-8000-000000000302';
+  let ownsAcademyTenant = false;
+  let platformOccupantAccountId = '';
 
   beforeAll(async () => {
     await prisma.$connect();
@@ -337,15 +339,27 @@ describe('Counselor student CSV import', () => {
       update: {},
     });
 
-    await prisma.tenant.create({
-      data: {
-        id: publicAcademyTenantId,
-        type: 'UNIVERSITY',
-        name: '知行公开学院（导入测试）',
-        university: { create: { isPublicAcademy: true } },
-      },
+    // 复用已预置的知行公开学院（bootstrap 产物，唯一索引限制全平台至多一所）；
+    // 未预置的环境（CI）才自建并在清理时删除
+    const existingAcademy = await prisma.tenant.findFirst({
+      where: { type: 'UNIVERSITY', university: { isPublicAcademy: true } },
+      select: { id: true },
     });
-    await prisma.account.create({
+    if (existingAcademy) {
+      academyTenantId = existingAcademy.id;
+      ownsAcademyTenant = false;
+    } else {
+      await prisma.tenant.create({
+        data: {
+          id: academyTenantId,
+          type: 'UNIVERSITY',
+          name: '知行公开学院（导入测试）',
+          university: { create: { isPublicAcademy: true } },
+        },
+      });
+      ownsAcademyTenant = true;
+    }
+    const occupant = await prisma.account.create({
       data: {
         kind: 'END_USER',
         phone: platformStudentPhone,
@@ -353,13 +367,13 @@ describe('Counselor student CSV import', () => {
         status: 'ACTIVE',
         membership: {
           create: {
-            tenantId: publicAcademyTenantId,
+            tenantId: academyTenantId,
             role: 'STUDENT',
           },
         },
         studentProfile: {
           create: {
-            tenantId: publicAcademyTenantId,
+            tenantId: academyTenantId,
             kind: 'PLATFORM',
             registrationCityCode: '640100',
             residentCityCode: '640100',
@@ -367,6 +381,7 @@ describe('Counselor student CSV import', () => {
         },
       },
     });
+    platformOccupantAccountId = occupant.id;
 
     await prisma.tenant.create({
       data: {
@@ -434,9 +449,10 @@ describe('Counselor student CSV import', () => {
   }
 
   async function cleanFixtures(): Promise<void> {
+    // 真实预置的公开学院不参与清理；只有自建的学院租户才随之删除
     const fixtureTenantIds = [
       universityTenantId,
-      publicAcademyTenantId,
+      ...(ownsAcademyTenant ? [academyTenantId] : []),
       enterpriseTenantId,
     ];
     const fixtureMemberships = await prisma.membership.findMany({
@@ -444,7 +460,10 @@ describe('Counselor student CSV import', () => {
       select: { accountId: true },
     });
     const fixtureAccountIds = [
-      ...new Set(fixtureMemberships.map((membership) => membership.accountId)),
+      ...new Set([
+        platformOccupantAccountId,
+        ...fixtureMemberships.map((membership) => membership.accountId),
+      ]),
     ];
 
     await prisma.auditEvent.deleteMany({
@@ -455,8 +474,14 @@ describe('Counselor student CSV import', () => {
         ],
       },
     });
-    await prisma.studentProfile.deleteMany({
+    await prisma.classTransferRequest.deleteMany({
       where: { tenantId: { in: fixtureTenantIds } },
+    });
+    await prisma.staffPostHandover.deleteMany({
+      where: { tenantId: { in: fixtureTenantIds } },
+    });
+    await prisma.studentProfile.deleteMany({
+      where: { accountId: { in: fixtureAccountIds } },
     });
     await prisma.cohortClass.deleteMany({
       where: { tenantId: { in: fixtureTenantIds } },

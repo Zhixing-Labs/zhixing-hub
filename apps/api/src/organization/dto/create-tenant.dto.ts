@@ -1,9 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsIn,
+  IsOptional,
   IsString,
   IsUUID,
   Matches,
@@ -91,4 +93,61 @@ export class CreatedTenantDto {
 
   @ApiProperty({ format: 'uuid', type: String })
   initialAdminAccountId!: string;
+}
+
+export class ListTenantsQueryDto {
+  @ApiPropertyOptional({ enum: ['UNIVERSITY', 'ENTERPRISE', 'GOVERNMENT'] })
+  @IsOptional()
+  @IsIn(['UNIVERSITY', 'ENTERPRISE', 'GOVERNMENT'])
+  type?: 'UNIVERSITY' | 'ENTERPRISE' | 'GOVERNMENT';
+}
+
+export class TenantSummaryDto {
+  @ApiProperty({ format: 'uuid', type: String })
+  tenantId!: string;
+
+  @ApiProperty({ enum: ['UNIVERSITY', 'ENTERPRISE', 'GOVERNMENT'] })
+  type!: 'UNIVERSITY' | 'ENTERPRISE' | 'GOVERNMENT';
+
+  @ApiProperty({ type: String })
+  name!: string;
+
+  @ApiProperty({ enum: ['ACTIVE', 'DISABLED'] })
+  status!: 'ACTIVE' | 'DISABLED';
+
+  @ApiProperty({ nullable: true, type: Boolean })
+  isPublicAcademy!: boolean | null;
+
+  @ApiProperty({ type: String, format: 'date-time' })
+  createdAt!: Date;
+}
+
+export class ReplaceGovernmentScopesDto {
+  @ApiProperty({
+    description: '政务端允许聚合查看的高校租户白名单',
+    type: [String],
+  })
+  @IsArray()
+  @ArrayMaxSize(500)
+  @IsUUID('4', { each: true })
+  visibleUniversityTenantIds!: string[];
+}
+
+export class EnterpriseNatureTagDto {
+  @ApiProperty({ type: String })
+  code!: string;
+
+  @ApiProperty({ type: String })
+  name!: string;
+
+  @ApiProperty({ type: Number })
+  sortOrder!: number;
+}
+
+export class IndustryCategoryDto {
+  @ApiProperty({ type: String })
+  code!: string;
+
+  @ApiProperty({ type: String })
+  name!: string;
 }

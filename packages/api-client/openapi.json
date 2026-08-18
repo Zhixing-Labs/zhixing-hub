@@ -1412,6 +1412,35 @@
         ]
       }
     },
+    "/api/v1/organizations": {
+      "get": {
+        "operationId": "OrganizationController_listTenants",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TenantSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
     "/api/v1/organizations/administrative-divisions": {
       "get": {
         "operationId": "OrganizationController_administrativeDivisions",
@@ -1425,6 +1454,64 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/AdministrativeDivisionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/organizations/enterprise-nature-tags": {
+      "get": {
+        "operationId": "OrganizationController_enterpriseNatureTags",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EnterpriseNatureTagDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/organizations/industry-categories": {
+      "get": {
+        "operationId": "OrganizationController_industryCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IndustryCategoryDto"
                   }
                 }
               }
@@ -1610,6 +1697,59 @@
         ]
       }
     },
+    "/api/v1/organizations/enterprises/{tenantId}/admins": {
+      "post": {
+        "operationId": "OrganizationController_addEnterpriseAdmin",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitialTenantAdminDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedUniversityAdminDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
     "/api/v1/organizations/governments": {
       "post": {
         "operationId": "OrganizationController_createGovernment",
@@ -1652,6 +1792,218 @@
         ],
         "tags": [
           "Organization"
+        ]
+      }
+    },
+    "/api/v1/organizations/governments/{tenantId}/admins": {
+      "post": {
+        "operationId": "OrganizationController_addGovernmentAdmin",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitialTenantAdminDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedUniversityAdminDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/organizations/governments/{tenantId}/university-scopes": {
+      "put": {
+        "operationId": "OrganizationController_replaceGovernmentScopes",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceGovernmentScopesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Organization"
+        ]
+      }
+    },
+    "/api/v1/public/onboarding-leads": {
+      "post": {
+        "operationId": "PublicOnboardingLeadController_submit",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitOnboardingLeadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingLeadDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Onboarding leads"
+        ]
+      }
+    },
+    "/api/v1/organizations/onboarding-leads": {
+      "get": {
+        "operationId": "OrganizationOnboardingLeadController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OnboardingLeadDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Onboarding leads"
+        ]
+      }
+    },
+    "/api/v1/organizations/onboarding-leads/{id}": {
+      "patch": {
+        "operationId": "OrganizationOnboardingLeadController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOnboardingLeadStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingLeadDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Onboarding leads"
         ]
       }
     },
@@ -2002,6 +2354,249 @@
         ],
         "tags": [
           "University organization"
+        ]
+      }
+    },
+    "/api/v1/university/members/{membershipId}/handover": {
+      "post": {
+        "operationId": "UniversityStaffController_handover",
+        "parameters": [
+          {
+            "name": "membershipId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandoverUniversityMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffHandoverResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University staff"
+        ]
+      }
+    },
+    "/api/v1/university/members/{membershipId}/disable": {
+      "post": {
+        "operationId": "UniversityStaffController_disable",
+        "parameters": [
+          {
+            "name": "membershipId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University staff"
+        ]
+      }
+    },
+    "/api/v1/university/class-transfers": {
+      "get": {
+        "operationId": "UniversityStaffController_listPendingClassTransfers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClassTransferRequestDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University staff"
+        ]
+      }
+    },
+    "/api/v1/university/class-transfers/{id}/resolve": {
+      "post": {
+        "operationId": "UniversityStaffController_resolveClassTransfer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveClassTransferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassTransferRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University staff"
+        ]
+      }
+    },
+    "/api/v1/account/me/class-transfers": {
+      "get": {
+        "operationId": "StudentClassTransferController_listMine",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClassTransferRequestDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Class transfer"
+        ]
+      },
+      "post": {
+        "operationId": "StudentClassTransferController_create",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClassTransferDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassTransferRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Class transfer"
         ]
       }
     },
@@ -2361,6 +2956,386 @@
         ],
         "tags": [
           "University students"
+        ]
+      }
+    },
+    "/api/v1/enterprise/org": {
+      "get": {
+        "operationId": "EnterpriseOrganizationController_getOrg",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseOrgDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Enterprise organization"
+        ]
+      }
+    },
+    "/api/v1/enterprise/departments": {
+      "post": {
+        "operationId": "EnterpriseOrganizationController_createDepartment",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnterpriseDepartmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseDepartmentDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Enterprise organization"
+        ]
+      }
+    },
+    "/api/v1/enterprise/locations": {
+      "put": {
+        "operationId": "EnterpriseOrganizationController_replaceLocations",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceEnterpriseLocationsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Enterprise organization"
+        ]
+      }
+    },
+    "/api/v1/enterprise/members": {
+      "post": {
+        "operationId": "EnterpriseOrganizationController_createMember",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnterpriseMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseMemberDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Enterprise organization"
+        ]
+      }
+    },
+    "/api/v1/enterprise/members/{membershipId}/disable": {
+      "post": {
+        "operationId": "EnterpriseOrganizationController_disableMember",
+        "parameters": [
+          {
+            "name": "membershipId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Enterprise organization"
+        ]
+      }
+    },
+    "/api/v1/government/members": {
+      "get": {
+        "operationId": "GovernmentOrganizationController_listMembers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GovernmentMemberDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Government organization"
+        ]
+      },
+      "post": {
+        "operationId": "GovernmentOrganizationController_createMember",
+        "parameters": [
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGovernmentMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GovernmentMemberDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Government organization"
+        ]
+      }
+    },
+    "/api/v1/government/members/{membershipId}/disable": {
+      "post": {
+        "operationId": "GovernmentOrganizationController_disableMember",
+        "parameters": [
+          {
+            "name": "membershipId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Government organization"
+        ]
+      }
+    },
+    "/api/v1/platform/public-academy/campuses": {
+      "get": {
+        "operationId": "PublicAcademyController_listCampuses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PublicAcademyCampusDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Public academy"
+        ]
+      }
+    },
+    "/api/v1/platform/public-academy/campuses/{campusId}": {
+      "patch": {
+        "operationId": "PublicAcademyController_setCampusStatus",
+        "parameters": [
+          {
+            "name": "campusId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPublicAcademyCampusStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicAcademyCampusDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "Public academy"
         ]
       }
     }
@@ -3450,6 +4425,49 @@
           }
         }
       },
+      "TenantSummaryDto": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "UNIVERSITY",
+              "ENTERPRISE",
+              "GOVERNMENT"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          },
+          "isPublicAcademy": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "tenantId",
+          "type",
+          "name",
+          "status",
+          "isPublicAcademy",
+          "createdAt"
+        ]
+      },
       "AdministrativeDivisionDto": {
         "type": "object",
         "properties": {
@@ -3476,6 +4494,40 @@
           "name",
           "level",
           "parentCode"
+        ]
+      },
+      "EnterpriseNatureTagDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "sortOrder"
+        ]
+      },
+      "IndustryCategoryDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name"
         ]
       },
       "CurrentOrganizationDto": {
@@ -3644,6 +4696,131 @@
           "initialAdmin",
           "divisionCode",
           "visibleUniversityTenantIds"
+        ]
+      },
+      "ReplaceGovernmentScopesDto": {
+        "type": "object",
+        "properties": {
+          "visibleUniversityTenantIds": {
+            "description": "政务端允许聚合查看的高校租户白名单",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "visibleUniversityTenantIds"
+        ]
+      },
+      "SubmitOnboardingLeadDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "UNIVERSITY",
+              "ENTERPRISE"
+            ]
+          },
+          "institutionName": {
+            "type": "string"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactMethod": {
+            "type": "string",
+            "description": "联系方式（电话 / 邮箱等）"
+          },
+          "intent": {
+            "type": "string"
+          },
+          "captchaToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "institutionName",
+          "contactName",
+          "contactMethod",
+          "intent",
+          "captchaToken"
+        ]
+      },
+      "OnboardingLeadDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "UNIVERSITY",
+              "ENTERPRISE"
+            ]
+          },
+          "institutionName": {
+            "type": "string"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactMethod": {
+            "type": "string"
+          },
+          "intent": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "IN_PROGRESS",
+              "OPENED",
+              "CLOSED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statusChangedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "institutionName",
+          "contactName",
+          "contactMethod",
+          "intent",
+          "status",
+          "createdAt",
+          "statusChangedAt"
+        ]
+      },
+      "UpdateOnboardingLeadStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "IN_PROGRESS",
+              "OPENED",
+              "CLOSED"
+            ]
+          }
+        },
+        "required": [
+          "status"
         ]
       },
       "CampusDto": {
@@ -4108,6 +5285,132 @@
           "role"
         ]
       },
+      "HandoverUniversityMemberDto": {
+        "type": "object",
+        "properties": {
+          "successorMembershipId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "successorMembershipId"
+        ]
+      },
+      "StaffHandoverResultDto": {
+        "type": "object",
+        "properties": {
+          "fromMembershipId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "toMembershipId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "UNIVERSITY_DASHBOARD",
+              "COLLEGE_ADMIN",
+              "PROGRAM_LEAD",
+              "COUNSELOR"
+            ]
+          },
+          "reassignedClassCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "fromMembershipId",
+          "toMembershipId",
+          "role",
+          "reassignedClassCount"
+        ]
+      },
+      "ClassTransferRequestDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fromClassId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "toClassId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_OUTGOING",
+              "PENDING_INCOMING",
+              "APPROVED",
+              "REJECTED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "outgoingResolvedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "incomingResolvedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "resolvedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "studentAccountId",
+          "fromClassId",
+          "toClassId",
+          "status",
+          "createdAt",
+          "outgoingResolvedAt",
+          "incomingResolvedAt",
+          "resolvedAt"
+        ]
+      },
+      "ResolveClassTransferDto": {
+        "type": "object",
+        "properties": {
+          "approve": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "approve"
+        ]
+      },
+      "CreateClassTransferDto": {
+        "type": "object",
+        "properties": {
+          "targetClassId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "targetClassId"
+        ]
+      },
       "ImportClassStudentsDto": {
         "type": "object",
         "properties": {
@@ -4367,6 +5670,311 @@
             ]
           }
         }
+      },
+      "EnterpriseLocationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "divisionCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "divisionCode"
+        ]
+      },
+      "EnterpriseDepartmentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status"
+        ]
+      },
+      "EnterpriseMemberDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "membershipId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ENTERPRISE_ADMIN",
+              "HR",
+              "PROJECT_LEAD",
+              "MENTOR",
+              "ENTERPRISE_DASHBOARD"
+            ]
+          },
+          "departmentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "accountStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING_ACTIVATION",
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "membershipStatus": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "membershipId",
+          "displayName",
+          "phone",
+          "role",
+          "departmentId",
+          "accountStatus",
+          "membershipStatus"
+        ]
+      },
+      "EnterpriseOrgDto": {
+        "type": "object",
+        "properties": {
+          "natureTagCode": {
+            "type": "string"
+          },
+          "industryCategoryCode": {
+            "type": "string"
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnterpriseLocationDto"
+            }
+          },
+          "departments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnterpriseDepartmentDto"
+            }
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnterpriseMemberDto"
+            }
+          }
+        },
+        "required": [
+          "natureTagCode",
+          "industryCategoryCode",
+          "locations",
+          "departments",
+          "members"
+        ]
+      },
+      "CreateEnterpriseDepartmentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "ReplaceEnterpriseLocationsDto": {
+        "type": "object",
+        "properties": {
+          "locationCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "locationCodes"
+        ]
+      },
+      "CreateEnterpriseMemberDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "HR",
+              "PROJECT_LEAD",
+              "MENTOR",
+              "ENTERPRISE_DASHBOARD"
+            ]
+          },
+          "departmentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "displayName",
+          "phone",
+          "role",
+          "departmentId"
+        ]
+      },
+      "GovernmentMemberDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "membershipId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "GOVERNMENT_DASHBOARD_ADMIN",
+              "GOVERNMENT_DASHBOARD"
+            ]
+          },
+          "accountStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING_ACTIVATION",
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "membershipStatus": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "membershipId",
+          "displayName",
+          "phone",
+          "role",
+          "accountStatus",
+          "membershipStatus"
+        ]
+      },
+      "CreateGovernmentMemberDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          }
+        },
+        "required": [
+          "displayName",
+          "phone"
+        ]
+      },
+      "PublicAcademyCampusDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "divisionCode": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          },
+          "studentCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "divisionCode",
+          "status"
+        ]
+      },
+      "SetPublicAcademyCampusStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "DISABLED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
       }
     }
   }

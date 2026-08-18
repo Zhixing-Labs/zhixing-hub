@@ -352,11 +352,31 @@ export type SelfCorrectProfileDto = {
     registrationCityCode?: string;
 };
 
+export type TenantSummaryDto = {
+    tenantId: string;
+    type: 'UNIVERSITY' | 'ENTERPRISE' | 'GOVERNMENT';
+    name: string;
+    status: 'ACTIVE' | 'DISABLED';
+    isPublicAcademy: boolean | null;
+    createdAt: string;
+};
+
 export type AdministrativeDivisionDto = {
     code: string;
     name: string;
     level: 'PROVINCE' | 'PREFECTURE';
     parentCode: string | null;
+};
+
+export type EnterpriseNatureTagDto = {
+    code: string;
+    name: string;
+    sortOrder: number;
+};
+
+export type IndustryCategoryDto = {
+    code: string;
+    name: string;
 };
 
 export type CurrentOrganizationDto = {
@@ -409,6 +429,41 @@ export type CreateGovernmentDto = {
      * 政务端允许聚合查看的高校租户白名单
      */
     visibleUniversityTenantIds: Array<string>;
+};
+
+export type ReplaceGovernmentScopesDto = {
+    /**
+     * 政务端允许聚合查看的高校租户白名单
+     */
+    visibleUniversityTenantIds: Array<string>;
+};
+
+export type SubmitOnboardingLeadDto = {
+    kind: 'UNIVERSITY' | 'ENTERPRISE';
+    institutionName: string;
+    contactName: string;
+    /**
+     * 联系方式（电话 / 邮箱等）
+     */
+    contactMethod: string;
+    intent: string;
+    captchaToken: string;
+};
+
+export type OnboardingLeadDto = {
+    id: string;
+    kind: 'UNIVERSITY' | 'ENTERPRISE';
+    institutionName: string;
+    contactName: string;
+    contactMethod: string;
+    intent: string;
+    status: 'NEW' | 'IN_PROGRESS' | 'OPENED' | 'CLOSED';
+    createdAt: string;
+    statusChangedAt: string | null;
+};
+
+export type UpdateOnboardingLeadStatusDto = {
+    status: 'NEW' | 'IN_PROGRESS' | 'OPENED' | 'CLOSED';
 };
 
 export type CampusDto = {
@@ -531,6 +586,37 @@ export type CreateUniversityMemberDto = {
     collegeId?: string;
 };
 
+export type HandoverUniversityMemberDto = {
+    successorMembershipId: string;
+};
+
+export type StaffHandoverResultDto = {
+    fromMembershipId: string;
+    toMembershipId: string;
+    role: 'UNIVERSITY_DASHBOARD' | 'COLLEGE_ADMIN' | 'PROGRAM_LEAD' | 'COUNSELOR';
+    reassignedClassCount: number;
+};
+
+export type ClassTransferRequestDto = {
+    id: string;
+    studentAccountId: string;
+    fromClassId: string;
+    toClassId: string;
+    status: 'PENDING_OUTGOING' | 'PENDING_INCOMING' | 'APPROVED' | 'REJECTED';
+    createdAt: string;
+    outgoingResolvedAt: string | null;
+    incomingResolvedAt: string | null;
+    resolvedAt: string | null;
+};
+
+export type ResolveClassTransferDto = {
+    approve: boolean;
+};
+
+export type CreateClassTransferDto = {
+    targetClassId: string;
+};
+
 export type ImportClassStudentsDto = {
     /**
      * UTF-8 CSV 全文（原始文件只在请求内解析，不落对象存储）。表头必须为「姓名,学号,手机号,性别」，字段一律必填；性别只接受男 / 女；单次至多 2000 行。班级由路径参数绑定，CSV 无班级字段。
@@ -629,6 +715,78 @@ export type CorrectStudentIdentityDto = {
      * 更正后的性别（与姓名至少提供一项）
      */
     gender?: 'MALE' | 'FEMALE';
+};
+
+export type EnterpriseLocationDto = {
+    id: string;
+    divisionCode: string;
+};
+
+export type EnterpriseDepartmentDto = {
+    id: string;
+    name: string;
+    status: 'ACTIVE' | 'DISABLED';
+};
+
+export type EnterpriseMemberDto = {
+    accountId: string;
+    membershipId: string;
+    displayName: string;
+    phone: string | null;
+    role: 'ENTERPRISE_ADMIN' | 'HR' | 'PROJECT_LEAD' | 'MENTOR' | 'ENTERPRISE_DASHBOARD';
+    departmentId: string | null;
+    accountStatus: 'PENDING_ACTIVATION' | 'ACTIVE' | 'SUSPENDED';
+    membershipStatus: 'ACTIVE' | 'DISABLED';
+};
+
+export type EnterpriseOrgDto = {
+    natureTagCode: string;
+    industryCategoryCode: string;
+    locations: Array<EnterpriseLocationDto>;
+    departments: Array<EnterpriseDepartmentDto>;
+    members: Array<EnterpriseMemberDto>;
+};
+
+export type CreateEnterpriseDepartmentDto = {
+    name: string;
+};
+
+export type ReplaceEnterpriseLocationsDto = {
+    locationCodes: Array<string>;
+};
+
+export type CreateEnterpriseMemberDto = {
+    displayName: string;
+    phone: string;
+    role: 'HR' | 'PROJECT_LEAD' | 'MENTOR' | 'ENTERPRISE_DASHBOARD';
+    departmentId: string;
+};
+
+export type GovernmentMemberDto = {
+    accountId: string;
+    membershipId: string;
+    displayName: string;
+    phone: string | null;
+    role: 'GOVERNMENT_DASHBOARD_ADMIN' | 'GOVERNMENT_DASHBOARD';
+    accountStatus: 'PENDING_ACTIVATION' | 'ACTIVE' | 'SUSPENDED';
+    membershipStatus: 'ACTIVE' | 'DISABLED';
+};
+
+export type CreateGovernmentMemberDto = {
+    displayName: string;
+    phone: string;
+};
+
+export type PublicAcademyCampusDto = {
+    id: string;
+    name: string;
+    divisionCode: string;
+    status: 'ACTIVE' | 'DISABLED';
+    studentCount?: number;
+};
+
+export type SetPublicAcademyCampusStatusDto = {
+    status: 'ACTIVE' | 'DISABLED';
 };
 
 export type ConfirmUserActivationDtoWritable = {
@@ -1304,6 +1462,19 @@ export type StudentSecurityControllerDisableStudentTotpResponses = {
 
 export type StudentSecurityControllerDisableStudentTotpResponse = StudentSecurityControllerDisableStudentTotpResponses[keyof StudentSecurityControllerDisableStudentTotpResponses];
 
+export type OrganizationControllerListTenantsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/organizations';
+};
+
+export type OrganizationControllerListTenantsResponses = {
+    200: Array<TenantSummaryDto>;
+};
+
+export type OrganizationControllerListTenantsResponse = OrganizationControllerListTenantsResponses[keyof OrganizationControllerListTenantsResponses];
+
 export type OrganizationControllerAdministrativeDivisionsData = {
     body?: never;
     path?: never;
@@ -1316,6 +1487,32 @@ export type OrganizationControllerAdministrativeDivisionsResponses = {
 };
 
 export type OrganizationControllerAdministrativeDivisionsResponse = OrganizationControllerAdministrativeDivisionsResponses[keyof OrganizationControllerAdministrativeDivisionsResponses];
+
+export type OrganizationControllerEnterpriseNatureTagsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/organizations/enterprise-nature-tags';
+};
+
+export type OrganizationControllerEnterpriseNatureTagsResponses = {
+    200: Array<EnterpriseNatureTagDto>;
+};
+
+export type OrganizationControllerEnterpriseNatureTagsResponse = OrganizationControllerEnterpriseNatureTagsResponses[keyof OrganizationControllerEnterpriseNatureTagsResponses];
+
+export type OrganizationControllerIndustryCategoriesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/organizations/industry-categories';
+};
+
+export type OrganizationControllerIndustryCategoriesResponses = {
+    200: Array<IndustryCategoryDto>;
+};
+
+export type OrganizationControllerIndustryCategoriesResponse = OrganizationControllerIndustryCategoriesResponses[keyof OrganizationControllerIndustryCategoriesResponses];
 
 export type OrganizationControllerCurrentData = {
     body?: never;
@@ -1380,6 +1577,24 @@ export type OrganizationControllerCreateEnterpriseResponses = {
 
 export type OrganizationControllerCreateEnterpriseResponse = OrganizationControllerCreateEnterpriseResponses[keyof OrganizationControllerCreateEnterpriseResponses];
 
+export type OrganizationControllerAddEnterpriseAdminData = {
+    body: InitialTenantAdminDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        tenantId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/organizations/enterprises/{tenantId}/admins';
+};
+
+export type OrganizationControllerAddEnterpriseAdminResponses = {
+    201: CreatedUniversityAdminDto;
+};
+
+export type OrganizationControllerAddEnterpriseAdminResponse = OrganizationControllerAddEnterpriseAdminResponses[keyof OrganizationControllerAddEnterpriseAdminResponses];
+
 export type OrganizationControllerCreateGovernmentData = {
     body: CreateGovernmentDto;
     headers: {
@@ -1395,6 +1610,86 @@ export type OrganizationControllerCreateGovernmentResponses = {
 };
 
 export type OrganizationControllerCreateGovernmentResponse = OrganizationControllerCreateGovernmentResponses[keyof OrganizationControllerCreateGovernmentResponses];
+
+export type OrganizationControllerAddGovernmentAdminData = {
+    body: InitialTenantAdminDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        tenantId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/organizations/governments/{tenantId}/admins';
+};
+
+export type OrganizationControllerAddGovernmentAdminResponses = {
+    201: CreatedUniversityAdminDto;
+};
+
+export type OrganizationControllerAddGovernmentAdminResponse = OrganizationControllerAddGovernmentAdminResponses[keyof OrganizationControllerAddGovernmentAdminResponses];
+
+export type OrganizationControllerReplaceGovernmentScopesData = {
+    body: ReplaceGovernmentScopesDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        tenantId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/organizations/governments/{tenantId}/university-scopes';
+};
+
+export type OrganizationControllerReplaceGovernmentScopesResponses = {
+    204: void;
+};
+
+export type OrganizationControllerReplaceGovernmentScopesResponse = OrganizationControllerReplaceGovernmentScopesResponses[keyof OrganizationControllerReplaceGovernmentScopesResponses];
+
+export type PublicOnboardingLeadControllerSubmitData = {
+    body: SubmitOnboardingLeadDto;
+    path?: never;
+    query?: never;
+    url: '/api/v1/public/onboarding-leads';
+};
+
+export type PublicOnboardingLeadControllerSubmitResponses = {
+    201: OnboardingLeadDto;
+};
+
+export type PublicOnboardingLeadControllerSubmitResponse = PublicOnboardingLeadControllerSubmitResponses[keyof PublicOnboardingLeadControllerSubmitResponses];
+
+export type OrganizationOnboardingLeadControllerListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/organizations/onboarding-leads';
+};
+
+export type OrganizationOnboardingLeadControllerListResponses = {
+    200: Array<OnboardingLeadDto>;
+};
+
+export type OrganizationOnboardingLeadControllerListResponse = OrganizationOnboardingLeadControllerListResponses[keyof OrganizationOnboardingLeadControllerListResponses];
+
+export type OrganizationOnboardingLeadControllerUpdateStatusData = {
+    body: UpdateOnboardingLeadStatusDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        id: unknown;
+    };
+    query?: never;
+    url: '/api/v1/organizations/onboarding-leads/{id}';
+};
+
+export type OrganizationOnboardingLeadControllerUpdateStatusResponses = {
+    200: OnboardingLeadDto;
+};
+
+export type OrganizationOnboardingLeadControllerUpdateStatusResponse = OrganizationOnboardingLeadControllerUpdateStatusResponses[keyof OrganizationOnboardingLeadControllerUpdateStatusResponses];
 
 export type UniversityOrganizationControllerOrgTreeData = {
     body?: never;
@@ -1524,6 +1819,102 @@ export type UniversityOrganizationControllerCreateMemberResponses = {
 };
 
 export type UniversityOrganizationControllerCreateMemberResponse = UniversityOrganizationControllerCreateMemberResponses[keyof UniversityOrganizationControllerCreateMemberResponses];
+
+export type UniversityStaffControllerHandoverData = {
+    body: HandoverUniversityMemberDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        membershipId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/members/{membershipId}/handover';
+};
+
+export type UniversityStaffControllerHandoverResponses = {
+    200: StaffHandoverResultDto;
+};
+
+export type UniversityStaffControllerHandoverResponse = UniversityStaffControllerHandoverResponses[keyof UniversityStaffControllerHandoverResponses];
+
+export type UniversityStaffControllerDisableData = {
+    body?: never;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        membershipId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/members/{membershipId}/disable';
+};
+
+export type UniversityStaffControllerDisableResponses = {
+    204: void;
+};
+
+export type UniversityStaffControllerDisableResponse = UniversityStaffControllerDisableResponses[keyof UniversityStaffControllerDisableResponses];
+
+export type UniversityStaffControllerListPendingClassTransfersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/university/class-transfers';
+};
+
+export type UniversityStaffControllerListPendingClassTransfersResponses = {
+    200: Array<ClassTransferRequestDto>;
+};
+
+export type UniversityStaffControllerListPendingClassTransfersResponse = UniversityStaffControllerListPendingClassTransfersResponses[keyof UniversityStaffControllerListPendingClassTransfersResponses];
+
+export type UniversityStaffControllerResolveClassTransferData = {
+    body: ResolveClassTransferDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        id: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/class-transfers/{id}/resolve';
+};
+
+export type UniversityStaffControllerResolveClassTransferResponses = {
+    200: ClassTransferRequestDto;
+};
+
+export type UniversityStaffControllerResolveClassTransferResponse = UniversityStaffControllerResolveClassTransferResponses[keyof UniversityStaffControllerResolveClassTransferResponses];
+
+export type StudentClassTransferControllerListMineData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/me/class-transfers';
+};
+
+export type StudentClassTransferControllerListMineResponses = {
+    200: Array<ClassTransferRequestDto>;
+};
+
+export type StudentClassTransferControllerListMineResponse = StudentClassTransferControllerListMineResponses[keyof StudentClassTransferControllerListMineResponses];
+
+export type StudentClassTransferControllerCreateData = {
+    body: CreateClassTransferDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/account/me/class-transfers';
+};
+
+export type StudentClassTransferControllerCreateResponses = {
+    201: ClassTransferRequestDto;
+};
+
+export type StudentClassTransferControllerCreateResponse = StudentClassTransferControllerCreateResponses[keyof StudentClassTransferControllerCreateResponses];
 
 export type CounselorStudentImportControllerImportStudentsData = {
     body: ImportClassStudentsDto;
@@ -1665,3 +2056,160 @@ export type UniversityStudentControllerCorrectStudentIdentityResponses = {
 };
 
 export type UniversityStudentControllerCorrectStudentIdentityResponse = UniversityStudentControllerCorrectStudentIdentityResponses[keyof UniversityStudentControllerCorrectStudentIdentityResponses];
+
+export type EnterpriseOrganizationControllerGetOrgData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/enterprise/org';
+};
+
+export type EnterpriseOrganizationControllerGetOrgResponses = {
+    200: EnterpriseOrgDto;
+};
+
+export type EnterpriseOrganizationControllerGetOrgResponse = EnterpriseOrganizationControllerGetOrgResponses[keyof EnterpriseOrganizationControllerGetOrgResponses];
+
+export type EnterpriseOrganizationControllerCreateDepartmentData = {
+    body: CreateEnterpriseDepartmentDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/enterprise/departments';
+};
+
+export type EnterpriseOrganizationControllerCreateDepartmentResponses = {
+    201: EnterpriseDepartmentDto;
+};
+
+export type EnterpriseOrganizationControllerCreateDepartmentResponse = EnterpriseOrganizationControllerCreateDepartmentResponses[keyof EnterpriseOrganizationControllerCreateDepartmentResponses];
+
+export type EnterpriseOrganizationControllerReplaceLocationsData = {
+    body: ReplaceEnterpriseLocationsDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/enterprise/locations';
+};
+
+export type EnterpriseOrganizationControllerReplaceLocationsResponses = {
+    204: void;
+};
+
+export type EnterpriseOrganizationControllerReplaceLocationsResponse = EnterpriseOrganizationControllerReplaceLocationsResponses[keyof EnterpriseOrganizationControllerReplaceLocationsResponses];
+
+export type EnterpriseOrganizationControllerCreateMemberData = {
+    body: CreateEnterpriseMemberDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/enterprise/members';
+};
+
+export type EnterpriseOrganizationControllerCreateMemberResponses = {
+    201: EnterpriseMemberDto;
+};
+
+export type EnterpriseOrganizationControllerCreateMemberResponse = EnterpriseOrganizationControllerCreateMemberResponses[keyof EnterpriseOrganizationControllerCreateMemberResponses];
+
+export type EnterpriseOrganizationControllerDisableMemberData = {
+    body?: never;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        membershipId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/enterprise/members/{membershipId}/disable';
+};
+
+export type EnterpriseOrganizationControllerDisableMemberResponses = {
+    204: void;
+};
+
+export type EnterpriseOrganizationControllerDisableMemberResponse = EnterpriseOrganizationControllerDisableMemberResponses[keyof EnterpriseOrganizationControllerDisableMemberResponses];
+
+export type GovernmentOrganizationControllerListMembersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/government/members';
+};
+
+export type GovernmentOrganizationControllerListMembersResponses = {
+    200: Array<GovernmentMemberDto>;
+};
+
+export type GovernmentOrganizationControllerListMembersResponse = GovernmentOrganizationControllerListMembersResponses[keyof GovernmentOrganizationControllerListMembersResponses];
+
+export type GovernmentOrganizationControllerCreateMemberData = {
+    body: CreateGovernmentMemberDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/government/members';
+};
+
+export type GovernmentOrganizationControllerCreateMemberResponses = {
+    201: GovernmentMemberDto;
+};
+
+export type GovernmentOrganizationControllerCreateMemberResponse = GovernmentOrganizationControllerCreateMemberResponses[keyof GovernmentOrganizationControllerCreateMemberResponses];
+
+export type GovernmentOrganizationControllerDisableMemberData = {
+    body?: never;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        membershipId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/government/members/{membershipId}/disable';
+};
+
+export type GovernmentOrganizationControllerDisableMemberResponses = {
+    204: void;
+};
+
+export type GovernmentOrganizationControllerDisableMemberResponse = GovernmentOrganizationControllerDisableMemberResponses[keyof GovernmentOrganizationControllerDisableMemberResponses];
+
+export type PublicAcademyControllerListCampusesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/platform/public-academy/campuses';
+};
+
+export type PublicAcademyControllerListCampusesResponses = {
+    200: Array<PublicAcademyCampusDto>;
+};
+
+export type PublicAcademyControllerListCampusesResponse = PublicAcademyControllerListCampusesResponses[keyof PublicAcademyControllerListCampusesResponses];
+
+export type PublicAcademyControllerSetCampusStatusData = {
+    body: SetPublicAcademyCampusStatusDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        campusId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/platform/public-academy/campuses/{campusId}';
+};
+
+export type PublicAcademyControllerSetCampusStatusResponses = {
+    200: PublicAcademyCampusDto;
+};
+
+export type PublicAcademyControllerSetCampusStatusResponse = PublicAcademyControllerSetCampusStatusResponses[keyof PublicAcademyControllerSetCampusStatusResponses];

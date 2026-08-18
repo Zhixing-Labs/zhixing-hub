@@ -513,6 +513,11 @@ describe('Student admin and lifecycle', () => {
     await prisma.auditEvent.deleteMany({
       where: { targetId: { in: accounts.map((item) => item.accountId) } },
     });
+    await prisma.classTransferRequest.deleteMany({
+      where: {
+        studentAccountId: { in: accounts.map((item) => item.accountId) },
+      },
+    });
     await prisma.studentProfile.deleteMany({
       where: { tenantId: universityTenantId },
     });
@@ -529,6 +534,9 @@ describe('Student admin and lifecycle', () => {
 
   async function cleanFixturesTree(): Promise<void> {
     await prisma.auditEvent.deleteMany({
+      where: { tenantId: universityTenantId },
+    });
+    await prisma.staffPostHandover.deleteMany({
       where: { tenantId: universityTenantId },
     });
     await prisma.cohortClass.deleteMany({

@@ -69,7 +69,10 @@ const phoneChange = new PhoneChangeService(
 );
 
 const CAPTCHA = 'zhixing-mock-captcha-passed';
-const academyTenantId = '10000000-0000-4000-8000-000000000501';
+let academyTenantId = '10000000-0000-4000-8000-000000000501';
+let ownsAcademyTenant = false;
+let disabledFixtureCampusId = '';
+let disabledFixtureCollegeId = '';
 const universityTenantId = '10000000-0000-4000-8000-000000000502';
 const universityStudentAccountId = '20000000-0000-4000-8000-000000000501';
 const staffAccountId = '20000000-0000-4000-8000-000000000502';
@@ -219,7 +222,7 @@ describe('Platform student account', () => {
         displayName: '无校区城市',
         gender: 'MALE',
         birthDate: '2005-01-01',
-        registrationCityCode: '110100',
+        registrationCityCode: '649901',
       }),
     ).rejects.toThrow(PublicAcademyNotConfiguredError);
 
@@ -235,7 +238,7 @@ describe('Platform student account', () => {
         displayName: '停用城市',
         gender: 'MALE',
         birthDate: '2005-01-01',
-        registrationCityCode: '640300',
+        registrationCityCode: '649902',
       }),
     ).rejects.toThrow(RegistrationCityUnavailableError);
   });
@@ -465,40 +468,76 @@ describe('Platform student account', () => {
   }
 
   async function seedPublicAcademy(): Promise<void> {
-    await prisma.tenant.create({
-      data: {
-        id: academyTenantId,
-        type: 'UNIVERSITY',
-        name: '知行公开学院（账户测试）',
-        university: { create: { isPublicAcademy: true } },
-      },
+    // 复用 bootstrap 预置的知行公开学院（全平台至多一所）；未预置环境才自建
+    const existing = await prisma.tenant.findFirst({
+      where: { type: 'UNIVERSITY', university: { isPublicAcademy: true } },
+      select: { id: true },
     });
-    for (const [code, disabled] of [
-      ['640100', false],
-      ['640200', false],
-      ['640300', true],
+    if (existing) {
+      academyTenantId = existing.id;
+      ownsAcademyTenant = false;
+    } else {
+      ownsAcademyTenant = true;
+      await prisma.tenant.create({
+        data: {
+          id: academyTenantId,
+          type: 'UNIVERSITY',
+          name: '知行公开学院（账户测试）',
+          university: { create: { isPublicAcademy: true } },
+        },
+      });
+      for (const code of ['640100', '640200'] as const) {
+        const name = `知行公开学院（账户测试）${code}校区`;
+        const campus = await prisma.campus.create({
+          data: { tenantId: academyTenantId, name, divisionCode: code },
+        });
+        const college = await prisma.college.create({
+          data: { tenantId: academyTenantId, name },
+        });
+        await prisma.collegeCampus.create({
+          data: {
+            tenantId: academyTenantId,
+            collegeId: college.id,
+            campusId: campus.id,
+            sortOrder: 0,
+          },
+        });
+      }
+    }
+
+    // 用例专用合成城市：无校区（仅字典行）与停用校区，不触碰真实预置结构
+    for (const [code, name] of [
+      ['649901', '无校区测试市'],
+      ['649902', '停用校区测试市'],
     ] as const) {
-      const name = `知行公开学院（账户测试）${code}校区`;
-      const campus = await prisma.campus.create({
-        data: {
-          tenantId: academyTenantId,
-          name,
-          divisionCode: code,
-          ...(disabled ? { status: 'DISABLED' } : {}),
-        },
-      });
-      const college = await prisma.college.create({
-        data: { tenantId: academyTenantId, name },
-      });
-      await prisma.collegeCampus.create({
-        data: {
-          tenantId: academyTenantId,
-          collegeId: college.id,
-          campusId: campus.id,
-          sortOrder: 0,
-        },
+      await prisma.administrativeDivision.upsert({
+        where: { code },
+        create: { code, name, level: 'PREFECTURE', parentCode: '640000', active: true },
+        update: {},
       });
     }
+    const disabledName = '知行公开学院（账户测试）649902校区';
+    const disabledCampus = await prisma.campus.create({
+      data: {
+        tenantId: academyTenantId,
+        name: disabledName,
+        divisionCode: '649902',
+        status: 'DISABLED',
+      },
+    });
+    const disabledCollege = await prisma.college.create({
+      data: { tenantId: academyTenantId, name: disabledName },
+    });
+    await prisma.collegeCampus.create({
+      data: {
+        tenantId: academyTenantId,
+        collegeId: disabledCollege.id,
+        campusId: disabledCampus.id,
+        sortOrder: 0,
+      },
+    });
+    disabledFixtureCampusId = disabledCampus.id;
+    disabledFixtureCollegeId = disabledCollege.id;
   }
 
   async function seedUniversitySide(): Promise<void> {
@@ -593,6 +632,15 @@ describe('Platform student account', () => {
     await prisma.phoneChangeRequest.deleteMany({
       where: { account: { id: { in: fixtureAccountIds() } } },
     });
+    const structureTenantIds = ownsAcademyTenant
+      ? [academyTenantId, universityTenantId]
+      : [universityTenantId];
+    await prisma.classTransferRequest.deleteMany({
+      where: { tenantId: { in: structureTenantIds } },
+    });
+    await prisma.staffPostHandover.deleteMany({
+      where: { tenantId: { in: structureTenantIds } },
+    });
     await prisma.auditEvent.deleteMany({
       where: {
         OR: [
@@ -608,32 +656,45 @@ describe('Platform student account', () => {
       where: { accountId: { in: fixtureAccountIds() } },
     });
     await prisma.studentProfile.deleteMany({
-      where: { tenantId: { in: [academyTenantId, universityTenantId] } },
+      where: { accountId: { in: fixtureAccountIds() } },
     });
     await prisma.cohortClass.deleteMany({
       where: { tenantId: universityTenantId },
     });
     await prisma.major.deleteMany({ where: { tenantId: universityTenantId } });
     await prisma.membership.deleteMany({
-      where: { tenantId: { in: [academyTenantId, universityTenantId] } },
+      where: { accountId: { in: fixtureAccountIds() } },
     });
     await prisma.collegeCampus.deleteMany({
-      where: { tenantId: { in: [academyTenantId, universityTenantId] } },
+      where: { tenantId: { in: structureTenantIds } },
     });
     await prisma.college.deleteMany({
-      where: { tenantId: { in: [academyTenantId, universityTenantId] } },
+      where: {
+        OR: [
+          { tenantId: { in: structureTenantIds } },
+          { id: disabledFixtureCollegeId },
+        ],
+      },
     });
     await prisma.campus.deleteMany({
-      where: { tenantId: { in: [academyTenantId, universityTenantId] } },
+      where: {
+        OR: [
+          { tenantId: { in: structureTenantIds } },
+          { id: disabledFixtureCampusId },
+        ],
+      },
+    });
+    await prisma.administrativeDivision.deleteMany({
+      where: { code: { in: ['649901', '649902'] } },
     });
     await prisma.account.deleteMany({
       where: { id: { in: fixtureAccountIds() } },
     });
     await prisma.university.deleteMany({
-      where: { tenantId: { in: [academyTenantId, universityTenantId] } },
+      where: { tenantId: { in: structureTenantIds } },
     });
     await prisma.tenant.deleteMany({
-      where: { id: { in: [academyTenantId, universityTenantId] } },
+      where: { id: { in: structureTenantIds } },
     });
     await prisma.legalDocumentVersion.deleteMany({
       where: { version: { startsWith: 'platform-account-' } },

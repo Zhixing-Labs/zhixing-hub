@@ -42,4 +42,22 @@ export class OrganizationQueryService {
       },
     });
   }
+
+  async listEnterpriseNatureTags() {
+    this.context.requireCurrent();
+    return this.prisma.enterpriseNatureTag.findMany({
+      where: { active: true },
+      orderBy: { sortOrder: 'asc' },
+      select: { code: true, name: true, sortOrder: true },
+    });
+  }
+
+  async listIndustryCategories() {
+    this.context.requireCurrent();
+    return this.prisma.industryCategory.findMany({
+      where: { active: true },
+      orderBy: { code: 'asc' },
+      select: { code: true, name: true },
+    });
+  }
 }

@@ -215,12 +215,125 @@ export class OrganizationAdminService {
     tenantId: string,
     input: InitialTenantAdminInput,
   ): Promise<{ accountId: string }> {
+    return this.addTenantAdministrator(
+      tenantId,
+      TenantType.UNIVERSITY,
+      MembershipRole.UNIVERSITY_ADMIN,
+      'tenant.university_admin.created',
+      input,
+    );
+  }
+
+  async addEnterpriseAdmin(
+    tenantId: string,
+    input: InitialTenantAdminInput,
+  ): Promise<{ accountId: string }> {
+    return this.addTenantAdministrator(
+      tenantId,
+      TenantType.ENTERPRISE,
+      MembershipRole.ENTERPRISE_ADMIN,
+      'tenant.enterprise_admin.created',
+      input,
+    );
+  }
+
+  async addGovernmentAdmin(
+    tenantId: string,
+    input: InitialTenantAdminInput,
+  ): Promise<{ accountId: string }> {
+    return this.addTenantAdministrator(
+      tenantId,
+      TenantType.GOVERNMENT,
+      MembershipRole.GOVERNMENT_DASHBOARD_ADMIN,
+      'tenant.government_admin.created',
+      input,
+    );
+  }
+
+  async listTenants(type?: 'UNIVERSITY' | 'ENTERPRISE' | 'GOVERNMENT') {
+    await this.requireOrganizationAdministrator();
+    return this.prisma.tenant.findMany({
+      where: {
+        type: type ?? { in: ['UNIVERSITY', 'ENTERPRISE', 'GOVERNMENT'] },
+      },
+      orderBy: [{ type: 'asc' }, { name: 'asc' }],
+      select: {
+        id: true,
+        type: true,
+        name: true,
+        status: true,
+        createdAt: true,
+        university: { select: { isPublicAcademy: true } },
+      },
+    });
+  }
+
+  async replaceGovernmentUniversityScopes(
+    tenantId: string,
+    visibleUniversityTenantIds: string[],
+  ): Promise<void> {
     const actor = await this.requireOrganizationAdministrator();
     const tenant = await this.prisma.tenant.findUnique({
       where: { id: tenantId },
       select: { type: true },
     });
-    if (!tenant || tenant.type !== TenantType.UNIVERSITY) {
+    if (!tenant || tenant.type !== TenantType.GOVERNMENT) {
+      throw new OrganizationReferenceNotFoundError();
+    }
+
+    const uniqueIds = [...new Set(visibleUniversityTenantIds)];
+    if (uniqueIds.length > 0) {
+      const universities = await this.prisma.tenant.findMany({
+        where: { id: { in: uniqueIds }, type: TenantType.UNIVERSITY },
+        select: { id: true },
+      });
+      if (universities.length !== uniqueIds.length) {
+        throw new OrganizationReferenceNotFoundError();
+      }
+    }
+
+    await this.prisma.$transaction(async (transaction) => {
+      await transaction.governmentUniversityScope.deleteMany({
+        where: { governmentTenantId: tenantId },
+      });
+      if (uniqueIds.length > 0) {
+        await transaction.governmentUniversityScope.createMany({
+          data: uniqueIds.map((universityTenantId) => ({
+            governmentTenantId: tenantId,
+            universityTenantId,
+          })),
+        });
+      }
+      await transaction.auditEvent.create({
+        data: {
+          tenantId,
+          actorAccountId: actor.accountId,
+          action: 'tenant.government_scopes.replaced',
+          targetType: 'tenant',
+          targetId: tenantId,
+          requestId: actor.requestId,
+          after: { visibleUniversityTenantIds: uniqueIds },
+        },
+      });
+    });
+  }
+
+  private async addTenantAdministrator(
+    tenantId: string,
+    expectedType: TenantType,
+    role:
+      | typeof MembershipRole.UNIVERSITY_ADMIN
+      | typeof MembershipRole.ENTERPRISE_ADMIN
+      | typeof MembershipRole.GOVERNMENT_DASHBOARD_ADMIN,
+    action: string,
+    input: InitialTenantAdminInput,
+  ): Promise<{ accountId: string }> {
+    const actor = await this.requireOrganizationAdministrator();
+    const tenant = await this.prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: { type: true },
+    });
+    if (!tenant || tenant.type !== expectedType) {
       throw new OrganizationReferenceNotFoundError();
     }
 
@@ -229,18 +342,18 @@ export class OrganizationAdminService {
         const account = await createInitialAdministrator(
           transaction,
           tenantId,
-          MembershipRole.UNIVERSITY_ADMIN,
+          role,
           input,
         );
         await transaction.auditEvent.create({
           data: {
             tenantId,
             actorAccountId: actor.accountId,
-            action: 'tenant.university_admin.created',
+            action,
             targetType: 'account',
             targetId: account.id,
             requestId: actor.requestId,
-            after: { phone: input.phone, role: MembershipRole.UNIVERSITY_ADMIN },
+            after: { phone: input.phone, role },
           },
         });
         return account;

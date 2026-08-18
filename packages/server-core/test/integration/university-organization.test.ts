@@ -373,6 +373,12 @@ async function cleanFixtures(): Promise<void> {
       ],
     },
   });
+  await prisma.classTransferRequest.deleteMany({
+    where: { tenantId: { in: fixtureTenantIds } },
+  });
+  await prisma.staffPostHandover.deleteMany({
+    where: { tenantId: { in: fixtureTenantIds } },
+  });
   await prisma.studentProfile.deleteMany({
     where: { tenantId: { in: fixtureTenantIds } },
   });
