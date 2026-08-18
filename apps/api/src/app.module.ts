@@ -19,6 +19,7 @@ import { StudentSecurityController } from './identity/student-security.controlle
 import { CounselorStudentImportController } from './organization/counselor-student-import.controller';
 import { OrganizationController } from './organization/organization.controller';
 import { UniversityOrganizationController } from './organization/university-organization.controller';
+import { UniversityStudentController } from './organization/university-student.controller';
 
 @Module({
   imports: [ServerCoreModule],
@@ -32,6 +33,7 @@ import { UniversityOrganizationController } from './organization/university-orga
     OrganizationController,
     UniversityOrganizationController,
     CounselorStudentImportController,
+    UniversityStudentController,
   ],
   providers: [SessionAuthGuard, CsrfGuard],
 })

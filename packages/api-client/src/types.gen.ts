@@ -452,6 +452,56 @@ export type StudentImportResultDto = {
     failures: Array<StudentImportFailureDto>;
 };
 
+export type StudentSummaryDto = {
+    accountId: string;
+    studentNumber: string;
+    displayName: string;
+    gender: 'MALE' | 'FEMALE' | 'UNSPECIFIED';
+    phone: string | null;
+    lifecycleState: 'ENROLLED' | 'GRADUATE_ACTIVE' | 'READ_ONLY' | 'SUSPENDED';
+    accountStatus: 'PENDING_ACTIVATION' | 'ACTIVE' | 'SUSPENDED';
+    classId: string | null;
+    /**
+     * 毕业时间（毕业活跃态起算，满 2 年转纯只读态）
+     */
+    graduatedAt: string | null;
+    createdAt: string;
+};
+
+export type CreateClassStudentDto = {
+    /**
+     * 姓名（学校名册为准，2–100 字符）
+     */
+    name: string;
+    /**
+     * 学号（本校终身不回收；数字、字母与连字符，1–50）
+     */
+    studentNumber: string;
+    phone: string;
+    /**
+     * 性别（CSV 导入同口径：仅男 / 女）
+     */
+    gender: 'MALE' | 'FEMALE';
+};
+
+export type GraduateClassStudentsDto = {
+    /**
+     * 本班在读学生账户 ID（单个毕业即传一个）
+     */
+    studentIds: Array<string>;
+};
+
+export type CorrectStudentIdentityDto = {
+    /**
+     * 更正后的姓名（与性别至少提供一项）
+     */
+    displayName?: string;
+    /**
+     * 更正后的性别（与姓名至少提供一项）
+     */
+    gender?: 'MALE' | 'FEMALE';
+};
+
 export type ConfirmUserActivationDtoWritable = {
     phone: string;
     code: string;
@@ -1161,3 +1211,126 @@ export type CounselorStudentImportControllerImportStudentsResponses = {
 };
 
 export type CounselorStudentImportControllerImportStudentsResponse = CounselorStudentImportControllerImportStudentsResponses[keyof CounselorStudentImportControllerImportStudentsResponses];
+
+export type UniversityStudentControllerListClassStudentsData = {
+    body?: never;
+    path: {
+        classId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/classes/{classId}/students';
+};
+
+export type UniversityStudentControllerListClassStudentsResponses = {
+    200: Array<StudentSummaryDto>;
+};
+
+export type UniversityStudentControllerListClassStudentsResponse = UniversityStudentControllerListClassStudentsResponses[keyof UniversityStudentControllerListClassStudentsResponses];
+
+export type UniversityStudentControllerCreateStudentData = {
+    body: CreateClassStudentDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        classId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/classes/{classId}/students';
+};
+
+export type UniversityStudentControllerCreateStudentResponses = {
+    201: StudentSummaryDto;
+};
+
+export type UniversityStudentControllerCreateStudentResponse = UniversityStudentControllerCreateStudentResponses[keyof UniversityStudentControllerCreateStudentResponses];
+
+export type UniversityStudentControllerGraduateStudentsData = {
+    body: GraduateClassStudentsDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        classId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/classes/{classId}/students/graduate';
+};
+
+export type UniversityStudentControllerGraduateStudentsResponses = {
+    200: Array<StudentSummaryDto>;
+};
+
+export type UniversityStudentControllerGraduateStudentsResponse = UniversityStudentControllerGraduateStudentsResponses[keyof UniversityStudentControllerGraduateStudentsResponses];
+
+export type UniversityStudentControllerSuspendStudentData = {
+    body?: never;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        accountId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/students/{accountId}/suspend';
+};
+
+export type UniversityStudentControllerSuspendStudentResponses = {
+    204: void;
+};
+
+export type UniversityStudentControllerSuspendStudentResponse = UniversityStudentControllerSuspendStudentResponses[keyof UniversityStudentControllerSuspendStudentResponses];
+
+export type UniversityStudentControllerRestoreStudentData = {
+    body?: never;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        accountId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/students/{accountId}/restore';
+};
+
+export type UniversityStudentControllerRestoreStudentResponses = {
+    204: void;
+};
+
+export type UniversityStudentControllerRestoreStudentResponse = UniversityStudentControllerRestoreStudentResponses[keyof UniversityStudentControllerRestoreStudentResponses];
+
+export type UniversityStudentControllerDeregisterStudentData = {
+    body?: never;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        accountId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/students/{accountId}/deregister';
+};
+
+export type UniversityStudentControllerDeregisterStudentResponses = {
+    204: void;
+};
+
+export type UniversityStudentControllerDeregisterStudentResponse = UniversityStudentControllerDeregisterStudentResponses[keyof UniversityStudentControllerDeregisterStudentResponses];
+
+export type UniversityStudentControllerCorrectStudentIdentityData = {
+    body: CorrectStudentIdentityDto;
+    headers: {
+        'x-csrf-token': string;
+    };
+    path: {
+        accountId: unknown;
+    };
+    query?: never;
+    url: '/api/v1/university/students/{accountId}/identity';
+};
+
+export type UniversityStudentControllerCorrectStudentIdentityResponses = {
+    200: StudentSummaryDto;
+};
+
+export type UniversityStudentControllerCorrectStudentIdentityResponse = UniversityStudentControllerCorrectStudentIdentityResponses[keyof UniversityStudentControllerCorrectStudentIdentityResponses];

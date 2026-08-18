@@ -132,29 +132,40 @@ export class CounselorStudentImportService {
     const studentNumbers = [
       ...new Set(parsed.rows.map((row) => row.studentNumber)),
     ];
-    const [occupiedAccounts, occupiedProfiles] = await Promise.all([
-      this.prisma.account.findMany({
-        where: { phone: { in: phones } },
-        include: {
-          membership: { include: { tenant: { select: { name: true } } } },
-          studentProfile: true,
-        },
-      }),
-      this.prisma.studentProfile.findMany({
-        where: {
-          tenantId: actor.tenantId,
-          studentNumber: { in: studentNumbers },
-        },
-        select: { studentNumber: true },
-      }),
-    ]);
+    const [occupiedAccounts, occupiedProfiles, retiredNumbers] =
+      await Promise.all([
+        this.prisma.account.findMany({
+          where: { phone: { in: phones } },
+          include: {
+            membership: { include: { tenant: { select: { name: true } } } },
+            studentProfile: true,
+          },
+        }),
+        this.prisma.studentProfile.findMany({
+          where: {
+            tenantId: actor.tenantId,
+            studentNumber: { in: studentNumbers },
+          },
+          select: { studentNumber: true },
+        }),
+        this.prisma.retiredStudentNumber.findMany({
+          where: {
+            tenantId: actor.tenantId,
+            studentNumber: { in: studentNumbers },
+          },
+          select: { studentNumber: true },
+        }),
+      ]);
     const accountByPhone = new Map(
       occupiedAccounts
         .filter((account) => account.phone !== null)
         .map((account) => [account.phone!, account]),
     );
     const occupiedStudentNumbers = new Set(
-      occupiedProfiles.map((profile) => profile.studentNumber!),
+      [
+        ...occupiedProfiles.map((profile) => profile.studentNumber!),
+        ...retiredNumbers.map((retired) => retired.studentNumber),
+      ],
     );
 
     const importable: Array<{
@@ -165,7 +176,7 @@ export class CounselorStudentImportService {
       gender: StudentCsvGender;
     }> = [];
     for (const row of parsed.rows) {
-      // 学号在本校租户内终身不回收：任何现存档案（含毕业、停用）都视为占用
+      // 学号在本校租户内终身不回收：现存档案（含毕业、停用）与已注销回收的学号均视为占用
       if (occupiedStudentNumbers.has(row.studentNumber)) {
         failures.push({
           row: row.row,
@@ -316,7 +327,7 @@ interface CounselorActor {
   requestId: string;
 }
 
-function describePhoneOccupation(
+export function describePhoneOccupation(
   account: Prisma.AccountGetPayload<{
     include: {
       membership: { include: { tenant: { select: { name: true } } } };

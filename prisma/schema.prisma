@@ -147,6 +147,7 @@ model Tenant {
   classes          CohortClass[]
   memberships      Membership[]
   studentProfiles  StudentProfile[]
+  retiredStudentNumbers RetiredStudentNumber[]
   auditEvents      AuditEvent[]
 
   @@unique([type, name])
@@ -406,6 +407,19 @@ model StudentProfile {
   @@index([tenantId, lifecycleState, graduatedAt])
   @@index([classId])
   @@map("student_profile")
+}
+
+// 学籍停用态注销（6.4）后学号的租户内保留记录：档案删除、学号不回收（5.3 / 11 §6.5）。
+model RetiredStudentNumber {
+  id            String   @id @default(uuid()) @db.Uuid
+  tenantId      String   @map("tenant_id") @db.Uuid
+  studentNumber String   @map("student_number") @db.VarChar(50)
+  studentName   String   @map("student_name") @db.VarChar(100)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, studentNumber])
+  @@map("retired_student_number")
 }
 
 model AuthSession {

@@ -1532,6 +1532,312 @@
           "University student import"
         ]
       }
+    },
+    "/api/v1/university/classes/{classId}/students": {
+      "get": {
+        "operationId": "UniversityStudentController_listClassStudents",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University students"
+        ]
+      },
+      "post": {
+        "operationId": "UniversityStudentController_createStudent",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClassStudentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University students"
+        ]
+      }
+    },
+    "/api/v1/university/classes/{classId}/students/graduate": {
+      "post": {
+        "operationId": "UniversityStudentController_graduateStudents",
+        "parameters": [
+          {
+            "name": "classId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GraduateClassStudentsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University students"
+        ]
+      }
+    },
+    "/api/v1/university/students/{accountId}/suspend": {
+      "post": {
+        "operationId": "UniversityStudentController_suspendStudent",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University students"
+        ]
+      }
+    },
+    "/api/v1/university/students/{accountId}/restore": {
+      "post": {
+        "operationId": "UniversityStudentController_restoreStudent",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University students"
+        ]
+      }
+    },
+    "/api/v1/university/students/{accountId}/deregister": {
+      "post": {
+        "operationId": "UniversityStudentController_deregisterStudent",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University students"
+        ]
+      }
+    },
+    "/api/v1/university/students/{accountId}/identity": {
+      "patch": {
+        "operationId": "UniversityStudentController_correctStudentIdentity",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "x-csrf-token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CorrectStudentIdentityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "University students"
+        ]
+      }
     }
   },
   "info": {
@@ -3037,6 +3343,142 @@
           "createdCount",
           "failures"
         ]
+      },
+      "StudentSummaryDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentNumber": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "MALE",
+              "FEMALE",
+              "UNSPECIFIED"
+            ]
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "lifecycleState": {
+            "type": "string",
+            "enum": [
+              "ENROLLED",
+              "GRADUATE_ACTIVE",
+              "READ_ONLY",
+              "SUSPENDED"
+            ]
+          },
+          "accountStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING_ACTIVATION",
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "classId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "graduatedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "毕业时间（毕业活跃态起算，满 2 年转纯只读态）"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "accountId",
+          "studentNumber",
+          "displayName",
+          "gender",
+          "phone",
+          "lifecycleState",
+          "accountStatus",
+          "classId",
+          "graduatedAt",
+          "createdAt"
+        ]
+      },
+      "CreateClassStudentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "姓名（学校名册为准，2–100 字符）"
+          },
+          "studentNumber": {
+            "type": "string",
+            "description": "学号（本校终身不回收；数字、字母与连字符，1–50）",
+            "example": "2026010101"
+          },
+          "phone": {
+            "type": "string",
+            "example": "13800138001"
+          },
+          "gender": {
+            "type": "string",
+            "description": "性别（CSV 导入同口径：仅男 / 女）",
+            "enum": [
+              "MALE",
+              "FEMALE"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "studentNumber",
+          "phone",
+          "gender"
+        ]
+      },
+      "GraduateClassStudentsDto": {
+        "type": "object",
+        "properties": {
+          "studentIds": {
+            "description": "本班在读学生账户 ID（单个毕业即传一个）",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "studentIds"
+        ]
+      },
+      "CorrectStudentIdentityDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "更正后的姓名（与性别至少提供一项）"
+          },
+          "gender": {
+            "type": "string",
+            "description": "更正后的性别（与姓名至少提供一项）",
+            "enum": [
+              "MALE",
+              "FEMALE"
+            ]
+          }
+        }
       }
     }
   }

@@ -35,6 +35,7 @@ export * from './modules/governance/legal-document-governance.service';
 export * from './modules/organization/application/counselor-student-import.service';
 export * from './modules/organization/application/organization-admin.service';
 export * from './modules/organization/application/organization-query.service';
+export * from './modules/organization/application/student-admin.service';
 export * from './modules/organization/application/university-organization.service';
 export * from './modules/organization/domain/student-csv';
 export * from './modules/organization/domain/student-lifecycle';

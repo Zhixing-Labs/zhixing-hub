@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AccountSecurityControllerChangePasswordData, AccountSecurityControllerChangePasswordResponses, AccountSecurityControllerConfirmTotpEnrollmentData, AccountSecurityControllerConfirmTotpEnrollmentResponses, AccountSecurityControllerDisableTotpData, AccountSecurityControllerDisableTotpResponses, AccountSecurityControllerStartTotpEnrollmentData, AccountSecurityControllerStartTotpEnrollmentResponses, CounselorStudentImportControllerImportStudentsData, CounselorStudentImportControllerImportStudentsResponses, HealthControllerLiveData, HealthControllerLiveResponses, HealthControllerReadyData, HealthControllerReadyResponses, IdentityControllerConfirmPlatformEnrollmentData, IdentityControllerConfirmPlatformEnrollmentResponses, IdentityControllerConfirmSmsLoginData, IdentityControllerConfirmSmsLoginResponses, IdentityControllerConfirmUserActivationData, IdentityControllerConfirmUserActivationResponses, IdentityControllerCreatePlatformSessionData, IdentityControllerCreatePlatformSessionResponses, IdentityControllerCreateUserPasswordSessionData, IdentityControllerCreateUserPasswordSessionResponses, IdentityControllerCurrentLegalDocumentsData, IdentityControllerCurrentLegalDocumentsResponses, IdentityControllerCurrentSessionData, IdentityControllerCurrentSessionResponses, IdentityControllerFinishPlatformEnrollmentData, IdentityControllerFinishPlatformEnrollmentResponses, IdentityControllerIssueCaptchaChallengeData, IdentityControllerIssueCaptchaChallengeResponses, IdentityControllerRequestSmsLoginCodeData, IdentityControllerRequestSmsLoginCodeResponses, IdentityControllerRequestUserActivationCodeData, IdentityControllerRequestUserActivationCodeResponses, IdentityControllerRevokeCurrentSessionData, IdentityControllerRevokeCurrentSessionResponses, IdentityControllerStartPlatformEnrollmentData, IdentityControllerStartPlatformEnrollmentResponses, LegalDocumentGovernanceControllerCreateData, LegalDocumentGovernanceControllerCreateResponses, LegalDocumentGovernanceControllerListData, LegalDocumentGovernanceControllerListResponses, LegalDocumentGovernanceControllerPublishSetData, LegalDocumentGovernanceControllerPublishSetResponses, LegalDocumentGovernanceControllerUpdateData, LegalDocumentGovernanceControllerUpdateResponses, OrganizationControllerAddUniversityAdminData, OrganizationControllerAddUniversityAdminResponses, OrganizationControllerAdministrativeDivisionsData, OrganizationControllerAdministrativeDivisionsResponses, OrganizationControllerCreateEnterpriseData, OrganizationControllerCreateEnterpriseResponses, OrganizationControllerCreateGovernmentData, OrganizationControllerCreateGovernmentResponses, OrganizationControllerCreateUniversityData, OrganizationControllerCreateUniversityResponses, OrganizationControllerCurrentData, OrganizationControllerCurrentResponses, PlatformAccountControllerCreateData, PlatformAccountControllerCreateResponses, PlatformAccountControllerDisableData, PlatformAccountControllerDisableResponses, PlatformAccountControllerResetTotpData, PlatformAccountControllerResetTotpResponses, StudentSecurityControllerDisableStudentTotpData, StudentSecurityControllerDisableStudentTotpResponses, UniversityOrganizationControllerAssignClassCounselorData, UniversityOrganizationControllerAssignClassCounselorResponses, UniversityOrganizationControllerCreateCampusData, UniversityOrganizationControllerCreateCampusResponses, UniversityOrganizationControllerCreateClassData, UniversityOrganizationControllerCreateClassResponses, UniversityOrganizationControllerCreateCollegeData, UniversityOrganizationControllerCreateCollegeResponses, UniversityOrganizationControllerCreateMajorData, UniversityOrganizationControllerCreateMajorResponses, UniversityOrganizationControllerCreateMemberData, UniversityOrganizationControllerCreateMemberResponses, UniversityOrganizationControllerOrgTreeData, UniversityOrganizationControllerOrgTreeResponses, UniversityOrganizationControllerReplaceCollegeCampusesData, UniversityOrganizationControllerReplaceCollegeCampusesResponses } from './types.gen';
+import type { AccountSecurityControllerChangePasswordData, AccountSecurityControllerChangePasswordResponses, AccountSecurityControllerConfirmTotpEnrollmentData, AccountSecurityControllerConfirmTotpEnrollmentResponses, AccountSecurityControllerDisableTotpData, AccountSecurityControllerDisableTotpResponses, AccountSecurityControllerStartTotpEnrollmentData, AccountSecurityControllerStartTotpEnrollmentResponses, CounselorStudentImportControllerImportStudentsData, CounselorStudentImportControllerImportStudentsResponses, HealthControllerLiveData, HealthControllerLiveResponses, HealthControllerReadyData, HealthControllerReadyResponses, IdentityControllerConfirmPlatformEnrollmentData, IdentityControllerConfirmPlatformEnrollmentResponses, IdentityControllerConfirmSmsLoginData, IdentityControllerConfirmSmsLoginResponses, IdentityControllerConfirmUserActivationData, IdentityControllerConfirmUserActivationResponses, IdentityControllerCreatePlatformSessionData, IdentityControllerCreatePlatformSessionResponses, IdentityControllerCreateUserPasswordSessionData, IdentityControllerCreateUserPasswordSessionResponses, IdentityControllerCurrentLegalDocumentsData, IdentityControllerCurrentLegalDocumentsResponses, IdentityControllerCurrentSessionData, IdentityControllerCurrentSessionResponses, IdentityControllerFinishPlatformEnrollmentData, IdentityControllerFinishPlatformEnrollmentResponses, IdentityControllerIssueCaptchaChallengeData, IdentityControllerIssueCaptchaChallengeResponses, IdentityControllerRequestSmsLoginCodeData, IdentityControllerRequestSmsLoginCodeResponses, IdentityControllerRequestUserActivationCodeData, IdentityControllerRequestUserActivationCodeResponses, IdentityControllerRevokeCurrentSessionData, IdentityControllerRevokeCurrentSessionResponses, IdentityControllerStartPlatformEnrollmentData, IdentityControllerStartPlatformEnrollmentResponses, LegalDocumentGovernanceControllerCreateData, LegalDocumentGovernanceControllerCreateResponses, LegalDocumentGovernanceControllerListData, LegalDocumentGovernanceControllerListResponses, LegalDocumentGovernanceControllerPublishSetData, LegalDocumentGovernanceControllerPublishSetResponses, LegalDocumentGovernanceControllerUpdateData, LegalDocumentGovernanceControllerUpdateResponses, OrganizationControllerAddUniversityAdminData, OrganizationControllerAddUniversityAdminResponses, OrganizationControllerAdministrativeDivisionsData, OrganizationControllerAdministrativeDivisionsResponses, OrganizationControllerCreateEnterpriseData, OrganizationControllerCreateEnterpriseResponses, OrganizationControllerCreateGovernmentData, OrganizationControllerCreateGovernmentResponses, OrganizationControllerCreateUniversityData, OrganizationControllerCreateUniversityResponses, OrganizationControllerCurrentData, OrganizationControllerCurrentResponses, PlatformAccountControllerCreateData, PlatformAccountControllerCreateResponses, PlatformAccountControllerDisableData, PlatformAccountControllerDisableResponses, PlatformAccountControllerResetTotpData, PlatformAccountControllerResetTotpResponses, StudentSecurityControllerDisableStudentTotpData, StudentSecurityControllerDisableStudentTotpResponses, UniversityOrganizationControllerAssignClassCounselorData, UniversityOrganizationControllerAssignClassCounselorResponses, UniversityOrganizationControllerCreateCampusData, UniversityOrganizationControllerCreateCampusResponses, UniversityOrganizationControllerCreateClassData, UniversityOrganizationControllerCreateClassResponses, UniversityOrganizationControllerCreateCollegeData, UniversityOrganizationControllerCreateCollegeResponses, UniversityOrganizationControllerCreateMajorData, UniversityOrganizationControllerCreateMajorResponses, UniversityOrganizationControllerCreateMemberData, UniversityOrganizationControllerCreateMemberResponses, UniversityOrganizationControllerOrgTreeData, UniversityOrganizationControllerOrgTreeResponses, UniversityOrganizationControllerReplaceCollegeCampusesData, UniversityOrganizationControllerReplaceCollegeCampusesResponses, UniversityStudentControllerCorrectStudentIdentityData, UniversityStudentControllerCorrectStudentIdentityResponses, UniversityStudentControllerCreateStudentData, UniversityStudentControllerCreateStudentResponses, UniversityStudentControllerDeregisterStudentData, UniversityStudentControllerDeregisterStudentResponses, UniversityStudentControllerGraduateStudentsData, UniversityStudentControllerGraduateStudentsResponses, UniversityStudentControllerListClassStudentsData, UniversityStudentControllerListClassStudentsResponses, UniversityStudentControllerRestoreStudentData, UniversityStudentControllerRestoreStudentResponses, UniversityStudentControllerSuspendStudentData, UniversityStudentControllerSuspendStudentResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -470,6 +470,88 @@ export const counselorStudentImportControllerImportStudents = <ThrowOnError exte
             type: 'apiKey'
         }],
     url: '/api/v1/university/classes/{classId}/students/import',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const universityStudentControllerListClassStudents = <ThrowOnError extends boolean = false>(options: Options<UniversityStudentControllerListClassStudentsData, ThrowOnError>): RequestResult<UniversityStudentControllerListClassStudentsResponses, unknown, ThrowOnError> => (options.client ?? client).get<UniversityStudentControllerListClassStudentsResponses, unknown, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: 'zhixing_session',
+            type: 'apiKey'
+        }],
+    url: '/api/v1/university/classes/{classId}/students',
+    ...options
+});
+
+export const universityStudentControllerCreateStudent = <ThrowOnError extends boolean = false>(options: Options<UniversityStudentControllerCreateStudentData, ThrowOnError>): RequestResult<UniversityStudentControllerCreateStudentResponses, unknown, ThrowOnError> => (options.client ?? client).post<UniversityStudentControllerCreateStudentResponses, unknown, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: 'zhixing_session',
+            type: 'apiKey'
+        }],
+    url: '/api/v1/university/classes/{classId}/students',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const universityStudentControllerGraduateStudents = <ThrowOnError extends boolean = false>(options: Options<UniversityStudentControllerGraduateStudentsData, ThrowOnError>): RequestResult<UniversityStudentControllerGraduateStudentsResponses, unknown, ThrowOnError> => (options.client ?? client).post<UniversityStudentControllerGraduateStudentsResponses, unknown, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: 'zhixing_session',
+            type: 'apiKey'
+        }],
+    url: '/api/v1/university/classes/{classId}/students/graduate',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const universityStudentControllerSuspendStudent = <ThrowOnError extends boolean = false>(options: Options<UniversityStudentControllerSuspendStudentData, ThrowOnError>): RequestResult<UniversityStudentControllerSuspendStudentResponses, unknown, ThrowOnError> => (options.client ?? client).post<UniversityStudentControllerSuspendStudentResponses, unknown, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: 'zhixing_session',
+            type: 'apiKey'
+        }],
+    url: '/api/v1/university/students/{accountId}/suspend',
+    ...options
+});
+
+export const universityStudentControllerRestoreStudent = <ThrowOnError extends boolean = false>(options: Options<UniversityStudentControllerRestoreStudentData, ThrowOnError>): RequestResult<UniversityStudentControllerRestoreStudentResponses, unknown, ThrowOnError> => (options.client ?? client).post<UniversityStudentControllerRestoreStudentResponses, unknown, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: 'zhixing_session',
+            type: 'apiKey'
+        }],
+    url: '/api/v1/university/students/{accountId}/restore',
+    ...options
+});
+
+export const universityStudentControllerDeregisterStudent = <ThrowOnError extends boolean = false>(options: Options<UniversityStudentControllerDeregisterStudentData, ThrowOnError>): RequestResult<UniversityStudentControllerDeregisterStudentResponses, unknown, ThrowOnError> => (options.client ?? client).post<UniversityStudentControllerDeregisterStudentResponses, unknown, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: 'zhixing_session',
+            type: 'apiKey'
+        }],
+    url: '/api/v1/university/students/{accountId}/deregister',
+    ...options
+});
+
+export const universityStudentControllerCorrectStudentIdentity = <ThrowOnError extends boolean = false>(options: Options<UniversityStudentControllerCorrectStudentIdentityData, ThrowOnError>): RequestResult<UniversityStudentControllerCorrectStudentIdentityResponses, unknown, ThrowOnError> => (options.client ?? client).patch<UniversityStudentControllerCorrectStudentIdentityResponses, unknown, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: 'zhixing_session',
+            type: 'apiKey'
+        }],
+    url: '/api/v1/university/students/{accountId}/identity',
     ...options,
     headers: {
         'Content-Type': 'application/json',

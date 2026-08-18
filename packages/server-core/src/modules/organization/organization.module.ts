@@ -4,6 +4,7 @@ import { RequestContextModule } from '../../infrastructure/request-context/reque
 import { CounselorStudentImportService } from './application/counselor-student-import.service';
 import { OrganizationAdminService } from './application/organization-admin.service';
 import { OrganizationQueryService } from './application/organization-query.service';
+import { StudentAdminService } from './application/student-admin.service';
 import { UniversityOrganizationService } from './application/university-organization.service';
 
 @Module({
@@ -13,12 +14,14 @@ import { UniversityOrganizationService } from './application/university-organiza
     OrganizationQueryService,
     UniversityOrganizationService,
     CounselorStudentImportService,
+    StudentAdminService,
   ],
   exports: [
     OrganizationAdminService,
     OrganizationQueryService,
     UniversityOrganizationService,
     CounselorStudentImportService,
+    StudentAdminService,
   ],
 })
 export class OrganizationModule {}
